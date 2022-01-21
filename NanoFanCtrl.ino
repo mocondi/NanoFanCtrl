@@ -22,14 +22,14 @@ unsigned long previousMillis = 0;
 unsigned long iterationCounter = 0;
 bool gDebugMode = false;
 int setSpeed = 20;
-int index = 25;
-bool loopIttr = false;
+//int index = 25;
 int keypadKey = KEY_NONE;
 int newKey = KEY_NONE;
 int controlState = STATE_IDLE;
 
 static struct pt pt1, pt2; // each protothread needs one of these
 
+// MAIN SETUP /////////////////////////////////////////////////////////////////
 void setup()
 {
   Serial.println(F("setup() started..."));
@@ -83,32 +83,6 @@ void smartFanControl(/* unsigned long &curMillisec */)
  
 }
 
-void toggleLED() {
-  boolean ledstate = digitalRead(LED_BUILTIN); // get LED state
-  ledstate ^= 1;   // toggle LED state using xor
-  digitalWrite(LED_BUILTIN, ledstate); // write inversed state back
-}
-
-void LED_HeartBeat()
-{
-  const int hDelay = 80; 
-  const int hOff = hDelay * 6;
-  if (loopIttr) {
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(hDelay);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(hDelay*2);
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(hDelay);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(hDelay);
-    loopIttr = false;
-  } else {
-//    delay(hOff);
-    delay(180);
-    loopIttr = true;
-  }
-}
 
 void debugIO()
 {
@@ -181,13 +155,13 @@ static int keypadThread(struct pt *pt, int interval) {
 
     PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
     timestamp = millis(); // take a new timestamp
-    toggleLED();
+    M_CONTROL::toggleLED();
   }
   PT_END(pt);
   
 }
 // Process work
-static int fanCtrlThread(struct pt *pt, int interval) {
+static int workerThread(struct pt *pt, int interval) {
   static unsigned long timestamp = 0;
   PT_BEGIN(pt);
   while(1) {
@@ -203,22 +177,21 @@ static int fanCtrlThread(struct pt *pt, int interval) {
     case STATE_DEBUG:
     default:
       debugIO();
+      //debugKeypad();
       break;
     }    
 
     PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
     timestamp = millis();
-//    toggleLED();
+//    M_CONTROL::toggleLED();
   }
   PT_END(pt);
 }
 
-
+// MAIN LOOP /////////////////////////////////////////////////////////////////
 void loop() {
   // schedule the two protothreads that run indefinitely
-  keypadThread(&pt1, 500);    // Process every .5 seconds
-  fanCtrlThread(&pt2, 1000);  // Process every 1 second
-//debugIO();
-//debugKeypad();
+  keypadThread(&pt1, 500);  // Process every .5 seconds
+  worker(&pt2, 1000);       // Process every 1 second
 }
 

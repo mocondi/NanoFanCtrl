@@ -3,6 +3,7 @@
 * Handles fan control
 *
 */
+#include <Arduino.h>
 #include "Control.h"
 
 typedef struct _PAIR{
@@ -16,6 +17,7 @@ _PAIR tempTable[MAX_TABLE];
 const int minFanSpeed = 25; // Min speed in percentage
 const int maxFanSpeed = 100; // Max speed in percentage
 bool gIsRunning = false;
+bool loopIttr = false;
 
 
 void M_CONTROL::initControl()
@@ -59,3 +61,32 @@ int M_CONTROL::processFanControl(float temperature)
   }
 
 }
+
+void M_CONTROL::toggleLED() {
+  boolean ledstate = digitalRead(LED_BUILTIN); // get LED state
+  ledstate ^= 1;   // toggle LED state using xor
+  digitalWrite(LED_BUILTIN, ledstate); // write inversed state back
+}
+
+void M_CONTROL::heartBeatLED()
+{
+  const int hDelay = 80; 
+  const int hOff = hDelay * 6;
+  if (loopIttr) {
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(hDelay);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(hDelay*2);
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(hDelay);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(hDelay);
+    loopIttr = false;
+  } else {
+//    delay(hOff);
+    delay(180);
+    loopIttr = true;
+  }
+}
+
+
