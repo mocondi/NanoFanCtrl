@@ -1,3 +1,8 @@
+/*
+* Tools.cpp
+* Generic functions and tools
+*
+*/
 #include "Tools.h"
 
 int TOOLS::getMilliVoltsFromAnalog(int channel)

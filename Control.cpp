@@ -1,3 +1,8 @@
+/*
+* Control.cpp
+* Handles fan control
+*
+*/
 
 typedef struct _PAIR{
   float temp;

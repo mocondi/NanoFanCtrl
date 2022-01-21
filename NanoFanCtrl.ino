@@ -8,7 +8,7 @@
 
 //#include <stdlib.h>
 //#include <StandardCplusplus.h>
-#include <pt.h> // Protothreads, Near-true multi-task
+#include <pt.h> // Protothreads 3rd party library, Near-true multi-task
 
 #include "Display.h"
 #include "Temperature.h"

@@ -1,4 +1,8 @@
-//#include "Tools.h"
+/*
+* Temperature.cpp
+* Handles thermister reading and calculations
+*
+*/
 #include <Arduino.h>
 
 #define SAMPLE_COUNT      10
@@ -45,14 +49,6 @@ float sampleTemperature()
     // Y = Mx+b, Y = -22.5 + 4575
     // X = (Y-B)/M
     float temp = (volt-B)/MX;
-/*
-    Serial.println();
-    Serial.print("AD   : ");
-    Serial.println(AD);
-    Serial.print("Volt: ");
-    Serial.println(volt, 4);
-    Serial.print("Temp: ");
-    Serial.println(temp, 4);
-*/
+
     return temp;
 }

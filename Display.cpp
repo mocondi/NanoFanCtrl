@@ -1,13 +1,15 @@
 /*
   3 Color OLED .96" module driver
-
+*
+*
+* Library: https://github.com/desklab/desklab-arduino-lib
 // Size 1     (12345678901234567890) 20 Max?
 // Size 2       (1234567890) 10 Max
 // Size 3         (1234567)   7 Max
 */
 #include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
+#include <Adafruit_GFX.h> // 3rd party library Adafruit GFX 
+#include <Adafruit_SSD1306.h> // 3rd party library Adafruit SSD1306
 
 #define SCREEN_WIDTH    128 // OLED display width, in pixels
 #define SCREEN_HEIGHT    64 // OLED display height, in pixels

@@ -1,3 +1,8 @@
+/*
+* Keypad.cpp
+* Handles keypad interface
+*
+*/
 #include <Arduino.h>
 
 #include "Keypad.h"
