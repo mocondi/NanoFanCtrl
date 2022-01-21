@@ -82,7 +82,7 @@ void smartFanControl(/* unsigned long &curMillisec */)
   int fanSpeed = getFanSpeed();
   
   // Update LCD
-    OLED_setTempAndSpeed(probeTemp, setSpeed, fanSpeed);
+  OLED_setTempAndSpeed(probeTemp, setSpeed, fanSpeed);
 /*
   // If after boot time, turn off LCD if not running
   if (iterationCounter >= 5 && setSpeed == 0) {
@@ -151,8 +151,8 @@ void processKeypad(int kstate /*, unsigned long ms*/)
 void debugIO()
 {
   // Read all analogs and update voltages
-  int A0_Keypad = TOOLS::getMilliVoltsFromAnalog(A0);
-  int A1_Temp = TOOLS::getMilliVoltsFromAnalog(A1);
+  int A0_Keypad = TOOLS::getMilliVoltsFromAnalog(A0, 10);
+  int A1_Temp = TOOLS::getMilliVoltsFromAnalog(A1, 10);
   int A2_Tach = TOOLS::getMilliVoltsFromAnalog(A2);
 
   OLED_debugClear();
@@ -174,9 +174,22 @@ void debugIO()
 static int protothread1(struct pt *pt, int interval) {
   
   static unsigned long timestamp = 0;
+  static char message[124];
+  static char ctemp[32];
   PT_BEGIN(pt);
   while(1) { // never stop 
-    keypadState = readKeypad();  
+    int newState = readKeypad();
+    if (keypadState != newState) {
+  itoa(keypadState, ctemp, 10);
+  sprintf(message, "keypadState: %s", ctemp);
+
+  OLED_debugClear();
+  OLED_debug(1, message);
+  OLED_debugWrite();
+
+//      serial.println(F(""));
+      keypadState = newState;
+    } 
 
     PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
     timestamp = millis(); // take a new timestamp
@@ -205,10 +218,9 @@ static int protothread2(struct pt *pt, int interval) {
 
 
 void loop() {
-  protothread1(&pt1, 500); // schedule the two protothreads
-  protothread2(&pt2, 1000); // by calling them infinitely
-//    int key = readKeypad();
-//      processKeypad(key, currentMillis);
+//  protothread1(&pt1, 500); // schedule the two protothreads
+//  protothread2(&pt2, 1000); // by calling them infinitely
+debugIO();
 /*
   unsigned long currentMillis = millis();
   if(currentMillis - previousMillis > processInterval) {

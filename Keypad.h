@@ -10,11 +10,11 @@ extern int readKeypad();
 #define KEY_ENTER     4
 #define KEY_NONE      5
 
-#define DEFAULT_LEFT  0
-#define DEFAULT_UP    927
-#define DEFAULT_DOWN  2124
-#define DEFAULT_RIGHT 3271
-#define DEFAULT_ENTER 4800
+#define DEFAULT_LEFT  0     // 
+#define DEFAULT_UP    927   // 
+#define DEFAULT_DOWN  2124  // 
+#define DEFAULT_RIGHT 3271  // 
+#define DEFAULT_ENTER 4800  // 
 
 enum {
   STATE_IDLE = 0,

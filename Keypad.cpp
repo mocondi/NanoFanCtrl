@@ -10,7 +10,7 @@
 #include "Tools.h"
 
 const int KeypadPin =	    A0;
-int keyValues[5]
+int keyValues[5];
 
 #define KEY_SAMPLE_COUNT  5
 
@@ -42,23 +42,5 @@ int readKeypad()
   if (ivolt >= 4700 && ivolt < 4850) return KEY_ENTER;
 
   return KEY_NONE;
-//*/
-/*
-    Serial.println();
-    Serial.print("AD   : ");
-    Serial.println(AD);
-    Serial.print("Volt: ");
-    Serial.println(volt, 4);
-    Serial.print("iVolt   : ");
-    Serial.println(ivolt);
 
-  char message[128];
-  char ctemp[16];
-//  char ftemp[16];
-//  dtostrf(volt, 3, 1, ftemp);
-  itoa(volt, ctemp, 10);
-  sprintf(message, "Volts: %s", ctemp);
-  OLED_debug(message);
-  return 0;
-//*/  
 }
