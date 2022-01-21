@@ -1,4 +1,7 @@
 #pragma once
-extern void initTemperature();
-extern float sampleTempPower();
-extern float sampleTemperature();
+namespace M_TEMPERATURE
+{
+  void initTemperature();
+  float sampleTempPower();
+  float sampleTemperature();
+}

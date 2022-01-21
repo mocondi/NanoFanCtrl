@@ -5,6 +5,7 @@
 */
 #include <Arduino.h>
 #include "Control.h"
+#include "Temperature.h"
 
 typedef struct _PAIR{
   float temp;
@@ -14,6 +15,7 @@ typedef struct _PAIR{
 #define MAX_TABLE 6
 
 _PAIR tempTable[MAX_TABLE];
+int setSpeed = 20;
 const int minFanSpeed = 25; // Min speed in percentage
 const int maxFanSpeed = 100; // Max speed in percentage
 bool gIsRunning = false;
@@ -40,6 +42,24 @@ void M_CONTROL::initControl()
     tempTable[5].temp = 100.0F;
     tempTable[5].percent = 90;
   }
+
+void M_CONTROL::handleFanControl()
+{
+  // Read temperature
+  float probeTemp = M_TEMPERATURE::sampleTemperature();
+  
+  // Set fan speed
+  setSpeed = processFanControl(probeTemp);
+
+  // Control fan speed
+  controlFanSpeed(setSpeed);
+
+  // Read fan speed
+  int fanSpeed = getFanSpeed();
+  
+  // Update LCD
+  NANO_DISPLAY::setTempAndSpeed(probeTemp, setSpeed, fanSpeed);
+}
 
 int M_CONTROL::processFanControl(float temperature)
 {

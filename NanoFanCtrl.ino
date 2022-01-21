@@ -4,10 +4,6 @@
 *
 * By: Mark Ocondi
 */
-
-
-//#include <stdlib.h>
-//#include <StandardCplusplus.h>
 #include <pt.h> // Protothreads 3rd party library, Near-true multi-task
 
 #include "Display.h"
@@ -16,12 +12,10 @@
 #include "Control.h"
 #include "Keypad.h"
 #include "Tools.h"
+#include "Config.h"
+#include "Debug.h"
 
-unsigned long processInterval = 1000;
-unsigned long previousMillis = 0;
-unsigned long iterationCounter = 0;
 bool gDebugMode = false;
-int setSpeed = 20;
 //int index = 25;
 int keypadKey = KEY_NONE;
 int newKey = KEY_NONE;
@@ -45,7 +39,7 @@ void setup()
   }
 
   // Init our software modules
-  initTemperature();
+  M_TEMPERATURE::initTemperature();
   initFan();
   M_CONTROL::initControl();
   KEY_PAD::initKeypad();
@@ -62,81 +56,6 @@ void setup()
   PT_INIT(&pt2);  // protothread variables
 
   Serial.println(F("setup() completed..."));
-}
-
-void smartFanControl(/* unsigned long &curMillisec */)
-{
-  // Read temperature
-  float probeTemp = sampleTemperature();
-  
-  // Set fan speed
-  setSpeed = M_CONTROL::processFanControl(probeTemp);
-
-  // Control fan speed
-  controlFanSpeed(setSpeed);
-
-  // Read fan speed
-  int fanSpeed = getFanSpeed();
-  
-  // Update LCD
-  NANO_DISPLAY::setTempAndSpeed(probeTemp, setSpeed, fanSpeed);
- 
-}
-
-
-void debugIO()
-{
-  // Read all analogs and update voltages
-  int A0_Keypad = TOOLS::getMilliVoltsFromAnalog(A0, 10);
-  int A1_Temp = TOOLS::getMilliVoltsFromAnalog(A1, 10);
-  int A2_Tach = TOOLS::getMilliVoltsFromAnalog(A2);
-
-  NANO_DISPLAY::debugClear();
-  NANO_DISPLAY::debug(0, "DEBUG");
-
-  char message[128];
-  sprintf(message, "Keypad: %d", A0_Keypad);
-  NANO_DISPLAY::debug(1, message);
-  sprintf(message, "Temp: %d", A1_Temp);
-  NANO_DISPLAY::debug(2, message);
-  sprintf(message, "Tach: %d", A2_Tach);
-  NANO_DISPLAY::debug(3, message);
-
-  NANO_DISPLAY::debugWrite();
-}
-
-void debugKeypad()
-{
-  NANO_DISPLAY::debugClear();
-  NANO_DISPLAY::debug(0, "Keypad Debug");
-  char message[128];
-
-  switch(KEY_PAD::readKeypad())
-  {
-    case KEY_LEFT:
-      sprintf(message, "LEFT");
-      break;
-    case KEY_UP:
-      sprintf(message, "UP");
-      break;
-    case KEY_DOWN:
-      sprintf(message, "DOWN");
-      break;
-    case KEY_RIGHT:
-      sprintf(message, "RIGHT");
-      break;
-    case KEY_ENTER:
-      sprintf(message, "ENTER");
-      break;
-    case KEY_NONE:
-      sprintf(message, "NONE");
-      break;
-    default:
-      sprintf(message, "Default");
-      break;
-  }
-  NANO_DISPLAY::debug(2, message);
-  NANO_DISPLAY::debugWrite();
 }
 
 // Process keypad inputs
@@ -160,6 +79,7 @@ static int keypadThread(struct pt *pt, int interval) {
   PT_END(pt);
   
 }
+
 // Process work
 static int workerThread(struct pt *pt, int interval) {
   static unsigned long timestamp = 0;
@@ -170,20 +90,20 @@ static int workerThread(struct pt *pt, int interval) {
     {
     case STATE_IDLE:
     case STATE_CONTROL:
-      smartFanControl();
+      M_CONTROL::handleFanControl();
       break;
     case STATE_CONFIG:
+      M_CONFIG::handleConfig();
       break;
     case STATE_DEBUG:
     default:
-      debugIO();
-      //debugKeypad();
+      M_DEBUG::debugIO();
+      //M_DEBUG::debugKeypad();
       break;
     }    
 
     PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
     timestamp = millis();
-//    M_CONTROL::toggleLED();
   }
   PT_END(pt);
 }
@@ -192,6 +112,6 @@ static int workerThread(struct pt *pt, int interval) {
 void loop() {
   // schedule the two protothreads that run indefinitely
   keypadThread(&pt1, 500);  // Process every .5 seconds
-  worker(&pt2, 1000);       // Process every 1 second
+  workerThread(&pt2, 1000);       // Process every 1 second
 }
 
