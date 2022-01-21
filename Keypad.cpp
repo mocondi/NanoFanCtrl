@@ -10,7 +10,7 @@
 #include "Tools.h"
 
 const int KeypadPin =	    A0;
-int keyValues[5];
+int keyValues[KEY_NONE];
 
 #define KEY_SAMPLE_COUNT  5
 
@@ -18,6 +18,12 @@ void initKeypad()
 {
 //  pinMode(KeypadPin, INPUT);
 //  pinMode(KeypadPin, INPUT_PULLUP);
+  keyValues[KEY_LEFT]   = DEFAULT_LEFT;
+  keyValues[KEY_UP]     = DEFAULT_UP;
+  keyValues[KEY_DOWN]   = DEFAULT_DOWN;
+  keyValues[KEY_RIGHT]  = DEFAULT_RIGHT;
+  keyValues[KEY_ENTER]  = DEFAULT_ENTER;
+  keyValues[KEY_NONE]   = DEFAULT_NONE;
 }
 
 int getKeypadVolts()
@@ -28,7 +34,25 @@ int getKeypadVolts()
 int readKeypad()
 {
   int ivolt = TOOLS::getMilliVoltsFromAnalog(KeypadPin, KEY_SAMPLE_COUNT);
-//*
+
+char message[124];
+char ctemp[32];
+itoa(ivolt, ctemp, 10);
+sprintf(message, "Keypad Volts: %s", ctemp);
+Serial.println(message);
+
+  // Check idle and voltage source
+  if (ivolt >= (DEFAULT_NONE-V_OFFSET) && ivolt <= (DEFAULT_NONE-V_OFFSET)) {
+    return KEY_NONE;
+  }
+  if (ivolt < 10) return KEY_LEFT;
+
+  for (int i=KEY_LEFT; i<KEY_NONE; i++) {
+    if (ivolt >= (keyValues[i] - V_OFFSET) && ivolt <= (keyValues[i] + V_OFFSET)) {
+      return i;
+    }
+  }
+/*
   if (ivolt > 4900) return KEY_NONE;
   // 0.0
   if (ivolt < 10) return KEY_LEFT;
@@ -40,7 +64,7 @@ int readKeypad()
   if (ivolt >= 3000 && ivolt < 3500) return KEY_RIGHT;
   // 4800
   if (ivolt >= 4700 && ivolt < 4850) return KEY_ENTER;
-
+*/
   return KEY_NONE;
 
 }

@@ -83,14 +83,7 @@ void smartFanControl(/* unsigned long &curMillisec */)
   
   // Update LCD
   OLED_setTempAndSpeed(probeTemp, setSpeed, fanSpeed);
-/*
-  // If after boot time, turn off LCD if not running
-  if (iterationCounter >= 5 && setSpeed == 0) {
-    digitalWrite(OLED_POWER, HIGH);
-  } else {
-    digitalWrite(OLED_POWER, LOW);
-  }
-*/  
+ 
 }
 
 void toggleLED() {
@@ -132,20 +125,6 @@ void processKeypad(int kstate /*, unsigned long ms*/)
   if (keypadState == STATE_DEBUG) {
     debugIO();
   }
-/*  
-  switch(keypadState) {
-    case STATE_IDLE:
-      break;
-    case STATE_CONTROL:
-      break;
-    case STATE_CONFIG:
-      break;
-    case STATE_DEBUG:
-      break;
-    default:
-      break;
-  }
-*/
 }
 
 void debugIO()
@@ -167,10 +146,45 @@ void debugIO()
   OLED_debug(3, message);
 
   OLED_debugWrite();
+}
+
+void debugKeypad()
+{
+  OLED_debugClear();
+  OLED_debug(0, "Keypad DBG");
+  char message[128];
+
+  switch(readKeypad())
+  {
+    case KEY_LEFT:
+      sprintf(message, "LEFT");
+      break;
+    case KEY_UP:
+      sprintf(message, "UP");
+      break;
+    case KEY_DOWN:
+      sprintf(message, "DOWN");
+      break;
+    case KEY_RIGHT:
+      sprintf(message, "RIGHT");
+      break;
+    case KEY_ENTER:
+      sprintf(message, "ENTER");
+      break;
+    case KEY_NONE:
+      sprintf(message, "NONE");
+      break;
+    default:
+      sprintf(message, "Default");
+      break;
+  }
+  OLED_debug(2, message);
+
+  OLED_debugWrite();
 
 }
 
-/* This function toggles the LED after 'interval' ms passed */
+// This function toggles the LED after 'interval' ms passed 
 static int protothread1(struct pt *pt, int interval) {
   
   static unsigned long timestamp = 0;
@@ -198,7 +212,7 @@ static int protothread1(struct pt *pt, int interval) {
   PT_END(pt);
   
 }
-/* exactly the same as the protothread1 function */
+// exactly the same as the protothread1 function 
 static int protothread2(struct pt *pt, int interval) {
   static unsigned long timestamp = 0;
   PT_BEGIN(pt);
@@ -220,38 +234,7 @@ static int protothread2(struct pt *pt, int interval) {
 void loop() {
 //  protothread1(&pt1, 500); // schedule the two protothreads
 //  protothread2(&pt2, 1000); // by calling them infinitely
-debugIO();
-/*
-  unsigned long currentMillis = millis();
-  if(currentMillis - previousMillis > processInterval) {
-    previousMillis = currentMillis;
-    switch(key)
-    {
-      case KEY_LEFT:
-        OLED_debug("Left");
-        break;
-      case KEY_UP:
-        OLED_debug("Up");
-        break;
-      case KEY_DOWN:
-        OLED_debug("Down");
-        break;
-      case KEY_RIGHT:
-        OLED_debug("Right");
-        break;
-      case KEY_ENTER:
-        OLED_debug("Enter");
-        break;
-      
-      case KEY_NONE:
-      default:
-        OLED_debug("None");
-        break;
-    }
-//*/
-//    smartFanControl(currentMillis);
-//    LED_HeartBeat();
-//    iterationCounter++;
-//  }
+//debugIO();
+debugKeypad();
 }
 
