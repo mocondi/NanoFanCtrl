@@ -12,18 +12,18 @@ void initFan()
 // Return RPM speed
 int getFanSpeed()
 {
-    unsigned long highTime = pulseIn(FanTach, HIGH);  //read high time
-    unsigned long lowTime = pulseIn(FanTach, LOW);    //read low time
-    float period = highTime + lowTime; // Period = Ton + Toff
-    float freq = 1000000 / period;      //getting frequency with totalTime is in Micro seconds
-    float RPM = (freq / 2) * 60;          //we div by 2 since the fan tach outputs 2 pulses per revolution
+  unsigned long highTime = pulseIn(FanTach, HIGH);  // read high time
+  unsigned long lowTime = pulseIn(FanTach, LOW);    // read low time
+  float period = highTime + lowTime;                // Period = Ton + Toff
+  float freq = 1000000 / period;                    // getting frequency with totalTime is in Micro seconds
+  float RPM = (freq / 2) * 60;                      // we div by 2 since the fan tach outputs 2 pulses per revolution
 
 /*
     Serial.println();
     Serial.println(period);
     Serial.println(RPM);
 */
-    return (int)RPM;
+  return (int)RPM;
 }
 
 // Set speed on percentage

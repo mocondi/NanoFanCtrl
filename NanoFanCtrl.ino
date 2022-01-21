@@ -176,7 +176,7 @@ static int protothread1(struct pt *pt, int interval) {
   static unsigned long timestamp = 0;
   PT_BEGIN(pt);
   while(1) { // never stop 
-    keypadState = handleKeypad();  
+    keypadState = readKeypad();  
 
     PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
     timestamp = millis(); // take a new timestamp
@@ -205,9 +205,9 @@ static int protothread2(struct pt *pt, int interval) {
 
 
 void loop() {
-  protothread1(&pt1, 900); // schedule the two protothreads
+  protothread1(&pt1, 500); // schedule the two protothreads
   protothread2(&pt2, 1000); // by calling them infinitely
-//    int key = handleKeypad();
+//    int key = readKeypad();
 //      processKeypad(key, currentMillis);
 /*
   unsigned long currentMillis = millis();

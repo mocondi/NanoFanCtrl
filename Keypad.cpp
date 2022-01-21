@@ -9,9 +9,10 @@
 #include "Display.h"
 #include "Tools.h"
 
-const int KeypadPin = A0;
+const int KeypadPin =	    A0;
+int keyValues[5]
 
-#define SAMPLE_COUNT      5
+#define KEY_SAMPLE_COUNT  5
 
 void initKeypad()
 {
@@ -24,15 +25,9 @@ int getKeypadVolts()
   return TOOLS::getMilliVoltsFromAnalog(KeypadPin);
 }
 
-int handleKeypad()
+int readKeypad()
 {
-  int ADAvg = 0;
-  for (int i = 0; i < SAMPLE_COUNT; i++) {
-      ADAvg += analogRead(KeypadPin);
-  }
-  int AD = (ADAvg / SAMPLE_COUNT);
-  float volt = ((float)AD * 5000.0F) / 1024.0F;
-  int ivolt = volt;
+  int ivolt = TOOLS::getMilliVoltsFromAnalog(KeypadPin, KEY_SAMPLE_COUNT);
 //*
   if (ivolt > 4900) return KEY_NONE;
   // 0.0
