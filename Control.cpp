@@ -3,6 +3,7 @@
 * Handles fan control
 *
 */
+#include "Control.h"
 
 typedef struct _PAIR{
   float temp;
@@ -17,7 +18,7 @@ const int maxFanSpeed = 100; // Max speed in percentage
 bool gIsRunning = false;
 
 
-void initControl()
+void M_CONTROL::initControl()
 {
     tempTable[0].temp = 72.0F;
     tempTable[0].percent = 30;
@@ -38,7 +39,7 @@ void initControl()
     tempTable[5].percent = 90;
   }
 
-int processFanControl(float temperature)
+int M_CONTROL::processFanControl(float temperature)
 {
   // 1st if below lowest disable fan
   if (temperature < tempTable[0].temp) {

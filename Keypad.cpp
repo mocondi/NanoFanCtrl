@@ -53,4 +53,46 @@ int KEY_PAD::readKeypad()
 void KEY_PAD::processKeyStates(int &aState, int aKey)
 {
 
+  switch (aState)
+  {
+  case STATE_IDLE:
+  case STATE_CONTROL:
+    
+    break;
+  case STATE_CONFIG:
+    break;
+  case STATE_DEBUG:
+  default:
+    break;
+  }
+
+  switch(aKey)
+  {
+    case KEY_LEFT:
+      break;
+    case KEY_UP:
+      break;
+    case KEY_DOWN:
+      break;
+    case KEY_RIGHT:
+      break;
+    case KEY_ENTER:
+      break;
+    case KEY_NONE:
+      break;
+    default:
+      break;  
+  }
 }
+
+
+
+
+
+
+
+
+
+
+
+

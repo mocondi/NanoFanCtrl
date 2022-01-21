@@ -1,3 +1,6 @@
 #pragma once
-extern void initControl();
-extern int processFanControl(float temperature);
+namespace M_CONTROL
+{
+  void initControl();
+  int processFanControl(float temperature);
+}

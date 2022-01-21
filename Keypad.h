@@ -33,6 +33,7 @@ extern int processKeyStates(int aKey);
 
 #define V_OFFSET        100
 
+// Used for int keypadKey
 enum {
   KEY_LEFT = 0,
   KEY_UP,
@@ -42,6 +43,7 @@ enum {
   KEY_NONE
 };
 
+// Used for int controlState
 enum {
   STATE_IDLE = 0,
   STATE_CONTROL,

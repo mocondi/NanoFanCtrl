@@ -25,7 +25,8 @@ int setSpeed = 20;
 int index = 25;
 bool loopIttr = false;
 int keypadKey = KEY_NONE;
-int keypadState = STATE_IDLE;
+int newKey = KEY_NONE;
+int controlState = STATE_IDLE;
 
 static struct pt pt1, pt2; // each protothread needs one of these
 
@@ -46,7 +47,7 @@ void setup()
   // Init our software modules
   initTemperature();
   initFan();
-  initControl();
+  M_CONTROL::initControl();
   KEY_PAD::initKeypad();
 
   // Start with fan off
@@ -69,7 +70,7 @@ void smartFanControl(/* unsigned long &curMillisec */)
   float probeTemp = sampleTemperature();
   
   // Set fan speed
-  setSpeed = processFanControl(probeTemp);
+  setSpeed = M_CONTROL::processFanControl(probeTemp);
 
   // Control fan speed
   controlFanSpeed(setSpeed);
@@ -164,7 +165,7 @@ void debugKeypad()
   NANO_DISPLAY::debugWrite();
 }
 
-// This function toggles the LED after 'interval' ms passed 
+// Process keypad inputs
 static int keypadThread(struct pt *pt, int interval) {
   
   static unsigned long timestamp = 0;
@@ -172,10 +173,10 @@ static int keypadThread(struct pt *pt, int interval) {
   static char ctemp[32];
   PT_BEGIN(pt);
   while(1) { // never stop 
-    int newKey = KEY_PAD::readKeypad();
+    newKey = KEY_PAD::readKeypad();
     if (keypadKey != newKey) {
-      keypadState = newKey;
-      KEY_PAD::processKeyStates(keypadState, keypadKey);
+      controlState = newKey;
+      KEY_PAD::processKeyStates(controlState, keypadKey);
     } 
 
     PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
@@ -185,16 +186,25 @@ static int keypadThread(struct pt *pt, int interval) {
   PT_END(pt);
   
 }
-// exactly the same as the protothread1 function 
+// Process work
 static int fanCtrlThread(struct pt *pt, int interval) {
   static unsigned long timestamp = 0;
   PT_BEGIN(pt);
   while(1) {
 
-    if(gDebugMode)
-      debugIO();
-    else 
+    switch (controlState)
+    {
+    case STATE_IDLE:
+    case STATE_CONTROL:
       smartFanControl();
+      break;
+    case STATE_CONFIG:
+      break;
+    case STATE_DEBUG:
+    default:
+      debugIO();
+      break;
+    }    
 
     PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
     timestamp = millis();
