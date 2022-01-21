@@ -14,7 +14,7 @@ int keyValues[KEY_NONE];
 
 #define KEY_SAMPLE_COUNT  5
 
-void initKeypad()
+void KEY_PAD::initKeypad()
 {
 //  pinMode(KeypadPin, INPUT);
 //  pinMode(KeypadPin, INPUT_PULLUP);
@@ -26,12 +26,12 @@ void initKeypad()
   keyValues[KEY_NONE]   = DEFAULT_NONE;
 }
 
-int getKeypadVolts()
+int KEY_PAD::getKeypadVolts()
 {
   return TOOLS::getMilliVoltsFromAnalog(KeypadPin);
 }
 
-int readKeypad()
+int KEY_PAD::readKeypad()
 {
   int ivolt = TOOLS::getMilliVoltsFromAnalog(KeypadPin, KEY_SAMPLE_COUNT);
 
@@ -50,7 +50,7 @@ int readKeypad()
   return KEY_NONE;
 }
 
-int processKeyStates()
+void KEY_PAD::processKeyStates(int &aState, int aKey)
 {
-  
+
 }

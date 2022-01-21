@@ -1,10 +1,14 @@
 #pragma once
-extern bool OLED_initDisplay();
-extern void OLED_setTitle();
-extern void OLED_setTempAndSpeed(float fTemp, int iFan, int iRPM);
-extern void OLED_debug(int line, char *message);
-extern void OLED_debugWrite();
-extern void OLED_debugClear();
+
+namespace NANO_DISPLAY
+{
+  bool initDisplay();
+  void setTitle();
+  void setTempAndSpeed(float fTemp, int iFan, int iRPM);
+  void debug(int line, char *message);
+  void debugWrite();
+  void debugClear();
+}
 
 
 /*  

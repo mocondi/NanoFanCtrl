@@ -57,18 +57,4 @@ int processFanControl(float temperature)
     }
   }
 
-/*  
-  //setSpeed += 3;
-  //if(setSpeed >100) setSpeed = 20;
-  if(probeTemp <= 72.0) {
-    setSpeed = 0;
-  } else if(probeTemp >= 73.0) {
-    if( probeTemp <= 80.0 && probeTemp >= 73.0) {
-      setSpeed = 35;
-    }
-    else if( probeTemp <= 85 && probeTemp >= 80.0) {
-      setSpeed = 40;
-    }
-  }
-*/
 }

@@ -21,10 +21,10 @@ unsigned long processInterval = 1000;
 unsigned long previousMillis = 0;
 unsigned long iterationCounter = 0;
 bool gDebugMode = false;
-const int OLED_POWER = 4;
 int setSpeed = 20;
 int index = 25;
 bool loopIttr = false;
+int keypadKey = KEY_NONE;
 int keypadState = STATE_IDLE;
 
 static struct pt pt1, pt2; // each protothread needs one of these
@@ -36,14 +36,10 @@ void setup()
   // Enable Board Status LED
   pinMode(LED_BUILTIN, OUTPUT);
 
-  // Enable LCD power
-  pinMode(OLED_POWER, OUTPUT);
-  digitalWrite(OLED_POWER, LOW);
-
   // Serial port debug print speed
   Serial.begin(9600);
 
-  if(!OLED_initDisplay()) {
+  if(!NANO_DISPLAY::initDisplay()) {
     Serial.println(F("OLED or driver failed!"));
   }
 
@@ -51,13 +47,13 @@ void setup()
   initTemperature();
   initFan();
   initControl();
-  initKeypad();
+  KEY_PAD::initKeypad();
 
   // Start with fan off
   controlFanSpeed(0);
 
   // If keypad left arrow pressed during startup, set to debug mode
-  if (getKeypadVolts() <= 100) {
+  if (KEY_PAD::getKeypadVolts() <= 100) {
     gDebugMode = true;
   }
 
@@ -82,7 +78,7 @@ void smartFanControl(/* unsigned long &curMillisec */)
   int fanSpeed = getFanSpeed();
   
   // Update LCD
-  OLED_setTempAndSpeed(probeTemp, setSpeed, fanSpeed);
+  NANO_DISPLAY::setTempAndSpeed(probeTemp, setSpeed, fanSpeed);
  
 }
 
@@ -113,20 +109,6 @@ void LED_HeartBeat()
   }
 }
 
-
-void processKeypad(int kstate /*, unsigned long ms*/)
-{
-  if (kstate == STATE_IDLE) {
-    keypadState = STATE_DEBUG;
-  } else {
-    keypadState = STATE_IDLE;
-  }
-
-  if (keypadState == STATE_DEBUG) {
-    debugIO();
-  }
-}
-
 void debugIO()
 {
   // Read all analogs and update voltages
@@ -134,27 +116,27 @@ void debugIO()
   int A1_Temp = TOOLS::getMilliVoltsFromAnalog(A1, 10);
   int A2_Tach = TOOLS::getMilliVoltsFromAnalog(A2);
 
-  OLED_debugClear();
-  OLED_debug(0, "DEBUG");
+  NANO_DISPLAY::debugClear();
+  NANO_DISPLAY::debug(0, "DEBUG");
 
   char message[128];
   sprintf(message, "Keypad: %d", A0_Keypad);
-  OLED_debug(1, message);
+  NANO_DISPLAY::debug(1, message);
   sprintf(message, "Temp: %d", A1_Temp);
-  OLED_debug(2, message);
+  NANO_DISPLAY::debug(2, message);
   sprintf(message, "Tach: %d", A2_Tach);
-  OLED_debug(3, message);
+  NANO_DISPLAY::debug(3, message);
 
-  OLED_debugWrite();
+  NANO_DISPLAY::debugWrite();
 }
 
 void debugKeypad()
 {
-  OLED_debugClear();
-  OLED_debug(0, "Keypad Debug");
+  NANO_DISPLAY::debugClear();
+  NANO_DISPLAY::debug(0, "Keypad Debug");
   char message[128];
 
-  switch(readKeypad())
+  switch(KEY_PAD::readKeypad())
   {
     case KEY_LEFT:
       sprintf(message, "LEFT");
@@ -178,8 +160,8 @@ void debugKeypad()
       sprintf(message, "Default");
       break;
   }
-  OLED_debug(2, message);
-  OLED_debugWrite();
+  NANO_DISPLAY::debug(2, message);
+  NANO_DISPLAY::debugWrite();
 }
 
 // This function toggles the LED after 'interval' ms passed 
@@ -190,9 +172,10 @@ static int keypadThread(struct pt *pt, int interval) {
   static char ctemp[32];
   PT_BEGIN(pt);
   while(1) { // never stop 
-    int newState = readKeypad();
-    if (keypadState != newState) {
-      keypadState = newState;
+    int newKey = KEY_PAD::readKeypad();
+    if (keypadKey != newKey) {
+      keypadState = newKey;
+      KEY_PAD::processKeyStates(keypadState, keypadKey);
     } 
 
     PT_WAIT_UNTIL(pt, millis() - timestamp > interval );

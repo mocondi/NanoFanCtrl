@@ -1,10 +1,18 @@
 #pragma once
 
+namespace KEY_PAD
+{
+  void initKeypad();
+  int getKeypadVolts();
+  int readKeypad();
+  void processKeyStates(int &aState, int aKey);
+}
+/*
 extern void initKeypad();
 extern int getKeypadVolts();
 extern int readKeypad();
-extern int processKeyStates();
-
+extern int processKeyStates(int aKey);
+*/
 #define POWER_USB 1
 
 #ifndef POWER_USB

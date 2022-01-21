@@ -7,31 +7,40 @@
 // Size 2       (1234567890) 10 Max
 // Size 3         (1234567)   7 Max
 */
+
 #include <Wire.h>
 #include <Adafruit_GFX.h> // 3rd party library Adafruit GFX 
 #include <Adafruit_SSD1306.h> // 3rd party library Adafruit SSD1306
+#include "Display.h"
 
 #define SCREEN_WIDTH    128 // OLED display width, in pixels
 #define SCREEN_HEIGHT    64 // OLED display height, in pixels
 #define OLED_RESET       -1
 #define SCREEN_ADDRESS 0x3C
 
+const int OLED_POWER = 4;
+
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 
-bool OLED_initDisplay() {
-    if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) { // Address 0x3D for 128x64
-        return false;
-    }
-    delay(200);
+bool NANO_DISPLAY::initDisplay() {
 
-    display.clearDisplay();
+  // Enable LCD power
+  pinMode(OLED_POWER, OUTPUT);
+  digitalWrite(OLED_POWER, LOW);
 
-    return true;
+  if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) { // Address 0x3D for 128x64
+      return false;
+  }
+  delay(200);
+
+  display.clearDisplay();
+
+  return true;
 }
 
-void OLED_setTitle() {
+void NANO_DISPLAY::setTitle() {
     display.clearDisplay();
     display.setTextColor(WHITE);
 
@@ -42,12 +51,12 @@ void OLED_setTitle() {
 //    display.display();
 }
 
-void OLED_setTempAndSpeed(float fTemp, int iFan, int iRPM)
+void NANO_DISPLAY::setTempAndSpeed(float fTemp, int iFan, int iRPM)
 {
     char cBuff[8];
 
     // Clear and set title
-    OLED_setTitle();
+    setTitle();
     
     const int yoffset = 22;
 
@@ -83,7 +92,7 @@ void OLED_setTempAndSpeed(float fTemp, int iFan, int iRPM)
     display.display();
 }
 
-void OLED_debug(int line, char *message)
+void NANO_DISPLAY::debug(int line, char *message)
 {
       
   display.setTextColor(WHITE);
@@ -115,12 +124,12 @@ void OLED_debug(int line, char *message)
   display.println(message);
 }
 
-void OLED_debugWrite()
+void NANO_DISPLAY::debugWrite()
 {
   display.display();
 }
 
-void OLED_debugClear()
+void NANO_DISPLAY::debugClear()
 {
   display.clearDisplay();
 }
