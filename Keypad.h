@@ -1,11 +1,13 @@
 #pragma once
+
 extern void initKeypad();
 extern int getKeypadVolts();
 extern int readKeypad();
+extern int processKeyStates();
 
 #define POWER_USB 1
 
-#ifdef POWER_USB
+#ifndef POWER_USB
   #define DEFAULT_LEFT    0     // 
   #define DEFAULT_UP      927   // 
   #define DEFAULT_DOWN    2124  // 

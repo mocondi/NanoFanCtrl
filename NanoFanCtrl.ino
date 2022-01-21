@@ -151,7 +151,7 @@ void debugIO()
 void debugKeypad()
 {
   OLED_debugClear();
-  OLED_debug(0, "Keypad DBG");
+  OLED_debug(0, "Keypad Debug");
   char message[128];
 
   switch(readKeypad())
@@ -179,13 +179,11 @@ void debugKeypad()
       break;
   }
   OLED_debug(2, message);
-
   OLED_debugWrite();
-
 }
 
 // This function toggles the LED after 'interval' ms passed 
-static int protothread1(struct pt *pt, int interval) {
+static int keypadThread(struct pt *pt, int interval) {
   
   static unsigned long timestamp = 0;
   static char message[124];
@@ -194,14 +192,6 @@ static int protothread1(struct pt *pt, int interval) {
   while(1) { // never stop 
     int newState = readKeypad();
     if (keypadState != newState) {
-  itoa(keypadState, ctemp, 10);
-  sprintf(message, "keypadState: %s", ctemp);
-
-  OLED_debugClear();
-  OLED_debug(1, message);
-  OLED_debugWrite();
-
-//      serial.println(F(""));
       keypadState = newState;
     } 
 
@@ -213,7 +203,7 @@ static int protothread1(struct pt *pt, int interval) {
   
 }
 // exactly the same as the protothread1 function 
-static int protothread2(struct pt *pt, int interval) {
+static int fanCtrlThread(struct pt *pt, int interval) {
   static unsigned long timestamp = 0;
   PT_BEGIN(pt);
   while(1) {
@@ -225,16 +215,17 @@ static int protothread2(struct pt *pt, int interval) {
 
     PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
     timestamp = millis();
-    toggleLED();
+//    toggleLED();
   }
   PT_END(pt);
 }
 
 
 void loop() {
-//  protothread1(&pt1, 500); // schedule the two protothreads
-//  protothread2(&pt2, 1000); // by calling them infinitely
+  // schedule the two protothreads that run indefinitely
+  keypadThread(&pt1, 500);    // Process every .5 seconds
+  fanCtrlThread(&pt2, 1000);  // Process every 1 second
 //debugIO();
-debugKeypad();
+//debugKeypad();
 }
 

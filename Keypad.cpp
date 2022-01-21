@@ -35,12 +35,6 @@ int readKeypad()
 {
   int ivolt = TOOLS::getMilliVoltsFromAnalog(KeypadPin, KEY_SAMPLE_COUNT);
 
-char message[124];
-char ctemp[32];
-itoa(ivolt, ctemp, 10);
-sprintf(message, "Keypad Volts: %s", ctemp);
-Serial.println(message);
-
   // Check idle and voltage source
   if (ivolt >= (DEFAULT_NONE-V_OFFSET) && ivolt <= (DEFAULT_NONE-V_OFFSET)) {
     return KEY_NONE;
@@ -52,19 +46,11 @@ Serial.println(message);
       return i;
     }
   }
-/*
-  if (ivolt > 4900) return KEY_NONE;
-  // 0.0
-  if (ivolt < 10) return KEY_LEFT;
-  // 927
-  if (ivolt >= 900 && ivolt < 1100) return KEY_UP;
-  // 2124
-  if (ivolt >= 2000 && ivolt < 2500) return KEY_DOWN;
-  // 3271
-  if (ivolt >= 3000 && ivolt < 3500) return KEY_RIGHT;
-  // 4800
-  if (ivolt >= 4700 && ivolt < 4850) return KEY_ENTER;
-*/
-  return KEY_NONE;
 
+  return KEY_NONE;
+}
+
+int processKeyStates()
+{
+  
 }
