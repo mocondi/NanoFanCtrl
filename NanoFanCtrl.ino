@@ -16,7 +16,6 @@
 #include "Debug.h"
 
 int keypadKey = KEY_NONE;
-int newKey = KEY_NONE;
 int controlState = STATE_IDLE;
 //int fanSpeed;
 //unsigned long highTime; //= pulseIn(FanTach, HIGH);  // read high time
