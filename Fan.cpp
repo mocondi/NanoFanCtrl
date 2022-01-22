@@ -13,17 +13,23 @@ void M_FAN::initFan()
 // Return RPM speed
 int M_FAN::getFanSpeed()
 {
+   unsigned long highTime = pulseIn(FanTach, HIGH);
+   unsigned long lowTime = pulseIn(FanTach, LOW);
+/*
   unsigned long highTime = pulseIn(FanTach, HIGH);  // read high time
   unsigned long lowTime = pulseIn(FanTach, LOW);    // read low time
   float period = highTime + lowTime;                // Period = Ton + Toff
+*/  
+float period = 1.0F;
+Serial.println();
+Serial.println(period);
+  if(period <= 0.0F) return 0;
   float freq = 1000000 / period;                    // getting frequency with totalTime is in Micro seconds
   float RPM = (freq / 2) * 60;                      // we div by 2 since the fan tach outputs 2 pulses per revolution
+Serial.println(RPM);
 
-/*
-    Serial.println();
-    Serial.println(period);
-    Serial.println(RPM);
-*/
+  if (RPM > 99999.0F) return 9999;
+
   return (int)RPM;
 }
 

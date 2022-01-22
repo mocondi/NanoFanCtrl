@@ -23,15 +23,15 @@ void M_DEBUG::debugIO()
   int A2_Tach = TOOLS::getMilliVoltsFromAnalog(A2);
 
   NANO_DISPLAY::clearDisplay();
-  NANO_DISPLAY::setMessage(0, "DEBUG");
+  NANO_DISPLAY::setMessage("DEBUG :-)", 0, 2);
 
   char message[128];
   sprintf(message, "Keypad: %d", A0_Keypad);
   NANO_DISPLAY::setMessage(message, 1, 1);
   sprintf(message, "Temp: %d", A1_Temp);
-  NANO_DISPLAY::setMessage(message, 1, 2);
+  NANO_DISPLAY::setMessage(message, 2, 1);
   sprintf(message, "Tach: %d", A2_Tach);
-  NANO_DISPLAY::setMessage(message, 1, 3);
+  NANO_DISPLAY::setMessage(message, 3, 1);
 
   NANO_DISPLAY::updateDisplay();
 }

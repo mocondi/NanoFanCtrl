@@ -49,17 +49,18 @@ void M_CONTROL::handleFanControl()
 {
   // Read temperature
   float probeTemp = M_TEMPERATURE::sampleTemperature();
-  
+
   // Set fan speed
   setSpeed = processFanControl(probeTemp);
 
   // Control fan speed
   M_FAN::controlFanSpeed(setSpeed);
 
+// MJO getFanSpeed() kills kb task!  
+M_FAN::getFanSpeed();
   // Read fan speed
-  int fanSpeed = M_FAN::getFanSpeed();
-  
-  // Update LCD
+//  int fanSpeed = M_FAN::getFanSpeed(); 
+int fanSpeed; 
   NANO_DISPLAY::setTempAndSpeed(probeTemp, setSpeed, fanSpeed);
 }
 

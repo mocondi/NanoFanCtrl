@@ -18,6 +18,7 @@ void KEY_PAD::initKeypad()
 {
 //  pinMode(KeypadPin, INPUT);
 //  pinMode(KeypadPin, INPUT_PULLUP);
+
   keyValues[KEY_LEFT]   = DEFAULT_LEFT;
   keyValues[KEY_UP]     = DEFAULT_UP;
   keyValues[KEY_DOWN]   = DEFAULT_DOWN;
@@ -52,11 +53,12 @@ int KEY_PAD::readKeypad()
 
 void KEY_PAD::processKeyStates(int &aState, int aKey)
 {
-
+/*
 char message[124];
 printf(message, "processKeyStates() state: %d,  key: %d", aState, aKey);;
 Serial.println(message);
-/*
+*/
+//*
   switch (aState)
   {
   case STATE_IDLE:
@@ -90,7 +92,7 @@ Serial.println(message);
     default:
       break;  
   }
-*/
+//*/
 }
 
 

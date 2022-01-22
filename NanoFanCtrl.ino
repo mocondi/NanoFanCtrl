@@ -19,6 +19,8 @@ int keypadKey = KEY_NONE;
 int newKey = KEY_NONE;
 int controlState = STATE_IDLE;
 
+static const int keypadIntrval = 250;
+static const int workerInterval = 1000;
 static struct pt pt1, pt2; // each protothread needs one of these
 
 // MAIN SETUP /////////////////////////////////////////////////////////////////
@@ -57,33 +59,29 @@ void setup()
 
 // Process keypad inputs
 static int keypadThread(struct pt *pt, int interval) {
-  Serial.println(F("Started keypadThread()"));
-  static unsigned long timestamp = 0;
   PT_BEGIN(pt);
+  static unsigned long timestamp = 0;
+  Serial.println(F("Started keypadThread()"));
+
   while(1) { // never stop 
 
-    newKey = KEY_PAD::readKeypad();
-Serial.println(F("a"));
-    if (keypadKey != newKey) {
-      keypadKey = newKey;
+    keypadKey = KEY_PAD::readKeypad();
+    if (KEY_NONE != keypadKey) {
       KEY_PAD::processKeyStates(controlState, keypadKey);
     } 
-Serial.println(F("b"));
     PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
     timestamp = millis(); // take a new timestamp
     M_CONTROL::toggleLED();
-Serial.println(F("c"));
   }
   PT_END(pt);
 }
 
 // Process work
 static int workerThread(struct pt *pt, int interval) {
+  PT_BEGIN(pt);
   Serial.println(F("Started workerThread()"));
   static unsigned long timestamp = 0;
-  PT_BEGIN(pt);
   while(1) {
-
     switch (controlState)
     {
     case STATE_IDLE:
@@ -97,18 +95,19 @@ static int workerThread(struct pt *pt, int interval) {
     default:
       M_DEBUG::handleDebug(keypadKey);
       break;
-    }    
+    }
 
-    PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
+    PT_WAIT_UNTIL(pt, millis() - timestamp > workerInterval );
     timestamp = millis();
   }
   PT_END(pt);
 }
 
+
 // MAIN LOOP /////////////////////////////////////////////////////////////////
 void loop() {
   // schedule the two protothreads that run indefinitely
-  keypadThread(&pt1, 500);  // Process every .5 seconds
-  workerThread(&pt2, 1000);       // Process every 1 second
+  keypadThread(&pt1, keypadIntrval);  // Process every .5 seconds
+  workerThread(&pt2, workerInterval);       // Process every 1 second
 }
 
