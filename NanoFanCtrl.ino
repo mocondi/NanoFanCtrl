@@ -18,8 +18,13 @@
 int keypadKey = KEY_NONE;
 int newKey = KEY_NONE;
 int controlState = STATE_IDLE;
+//int fanSpeed;
+//unsigned long highTime; //= pulseIn(FanTach, HIGH);  // read high time
+//unsigned long lowTime; // pulseIn(FanTach, LOW);    // read low time
 
-static const int keypadIntrval = 250;
+//const int FanTach =  A2;
+//static const int keypadIntrval = 1000;
+static const int keypadIntrval = 500;
 static const int workerInterval = 1000;
 static struct pt pt1, pt2; // each protothread needs one of these
 
@@ -69,6 +74,7 @@ static int keypadThread(struct pt *pt, int interval) {
     if (KEY_NONE != keypadKey) {
       KEY_PAD::processKeyStates(controlState, keypadKey);
     } 
+
     PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
     timestamp = millis(); // take a new timestamp
     M_CONTROL::toggleLED();
@@ -105,9 +111,19 @@ static int workerThread(struct pt *pt, int interval) {
 
 
 // MAIN LOOP /////////////////////////////////////////////////////////////////
+static unsigned long counter =0;
 void loop() {
   // schedule the two protothreads that run indefinitely
   keypadThread(&pt1, keypadIntrval);  // Process every .5 seconds
   workerThread(&pt2, workerInterval);       // Process every 1 second
+/* 
+ if (++counter >= 50000 ) {
+   counter =0;
+   highTime  = pulseIn(FanTach, HIGH);  // read high time
+   lowTime = pulseIn(FanTach, LOW);    // read low time
+   M_CONTROL::toggleLED();
+   }
+*/ 
+
 }
 

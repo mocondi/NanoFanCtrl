@@ -16,6 +16,7 @@ typedef struct _PAIR{
 
 #define MAX_TABLE 6
 
+//extern int fanSpeed;
 _PAIR tempTable[MAX_TABLE];
 int setSpeed = 20;
 const int minFanSpeed = 25; // Min speed in percentage
@@ -57,10 +58,9 @@ void M_CONTROL::handleFanControl()
   M_FAN::controlFanSpeed(setSpeed);
 
 // MJO getFanSpeed() kills kb task!  
-M_FAN::getFanSpeed();
   // Read fan speed
-//  int fanSpeed = M_FAN::getFanSpeed(); 
-int fanSpeed; 
+  //int fanSpeed = M_FAN::getFanSpeed(); 
+int fanSpeed =9;
   NANO_DISPLAY::setTempAndSpeed(probeTemp, setSpeed, fanSpeed);
 }
 

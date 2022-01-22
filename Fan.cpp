@@ -3,6 +3,8 @@
 
 const int FanPWM =    3;
 const int FanTach =  A2;
+extern unsigned long highTime;
+extern unsigned long lowTime;
 
 void M_FAN::initFan()
 {
@@ -13,14 +15,10 @@ void M_FAN::initFan()
 // Return RPM speed
 int M_FAN::getFanSpeed()
 {
-   unsigned long highTime = pulseIn(FanTach, HIGH);
-   unsigned long lowTime = pulseIn(FanTach, LOW);
-/*
   unsigned long highTime = pulseIn(FanTach, HIGH);  // read high time
   unsigned long lowTime = pulseIn(FanTach, LOW);    // read low time
   float period = highTime + lowTime;                // Period = Ton + Toff
-*/  
-float period = 1.0F;
+
 Serial.println();
 Serial.println(period);
   if(period <= 0.0F) return 0;
