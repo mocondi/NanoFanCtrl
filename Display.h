@@ -1,13 +1,24 @@
 #pragma once
 
+#define OFFSET_ZERO   0
+#define OFFSET_ONE    20
+#define OFFSET_TWO    30
+#define OFFSET_THREE  40
+#define OFFSET_FOUR   50
+#define OFFSET_FIVE   60
+
 namespace NANO_DISPLAY
 {
   bool initDisplay();
-  void setTitle();
   void setTempAndSpeed(float fTemp, int iFan, int iRPM);
+  void setMessage(char *aMessage, int aLine = 1, int aSize = 1);
+  void updateDisplay();
+  void clearDisplay();
+/*
   void debug(int line, char *message);
   void debugWrite();
   void debugClear();
+*/
 }
 
 

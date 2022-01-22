@@ -1,16 +1,17 @@
 #include <Arduino.h>
+#include "Fan.h"
 
 const int FanPWM =    3;
 const int FanTach =  A2;
 
-void initFan()
+void M_FAN::initFan()
 {
     pinMode(FanPWM, OUTPUT);
     pinMode(FanTach, INPUT);
 }
 
 // Return RPM speed
-int getFanSpeed()
+int M_FAN::getFanSpeed()
 {
   unsigned long highTime = pulseIn(FanTach, HIGH);  // read high time
   unsigned long lowTime = pulseIn(FanTach, LOW);    // read low time
@@ -27,11 +28,12 @@ int getFanSpeed()
 }
 
 // Set speed on percentage
-void controlFanSpeed(int percent)
+void M_FAN::controlFanSpeed(int percent)
 {
-//    float dac = ((float)percent * 256.0F) / 100.0F;
-    // Inverted PWM
-    float dac = ((float)percent * -2.56F) + 255.0F;
+  // Regular PWM conversion
+  //float dac = ((float)percent * 256.0F) / 100.0F;
+  // Inverted PWM
+  float dac = ((float)percent * -2.56F) + 255.0F;
 
-    analogWrite(FanPWM, (int)dac);
+  analogWrite(FanPWM, (int)dac);
 }

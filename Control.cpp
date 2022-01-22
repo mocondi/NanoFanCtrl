@@ -6,6 +6,8 @@
 #include <Arduino.h>
 #include "Control.h"
 #include "Temperature.h"
+#include "Fan.h"
+#include "Display.h"
 
 typedef struct _PAIR{
   float temp;
@@ -52,10 +54,10 @@ void M_CONTROL::handleFanControl()
   setSpeed = processFanControl(probeTemp);
 
   // Control fan speed
-  controlFanSpeed(setSpeed);
+  M_FAN::controlFanSpeed(setSpeed);
 
   // Read fan speed
-  int fanSpeed = getFanSpeed();
+  int fanSpeed = M_FAN::getFanSpeed();
   
   // Update LCD
   NANO_DISPLAY::setTempAndSpeed(probeTemp, setSpeed, fanSpeed);

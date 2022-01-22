@@ -53,13 +53,20 @@ int KEY_PAD::readKeypad()
 void KEY_PAD::processKeyStates(int &aState, int aKey)
 {
 
+char message[124];
+printf(message, "processKeyStates() state: %d,  key: %d", aState, aKey);;
+Serial.println(message);
+/*
   switch (aState)
   {
   case STATE_IDLE:
   case STATE_CONTROL:
-    
+    // Any key will move to config state
+    if (aKey == KEY_NONE) break;
+    else aState = STATE_CONFIG;    
     break;
   case STATE_CONFIG:
+    if (aKey == KEY_ENTER) aState = STATE_CONTROL;
     break;
   case STATE_DEBUG:
   default:
@@ -83,6 +90,7 @@ void KEY_PAD::processKeyStates(int &aState, int aKey)
     default:
       break;  
   }
+*/
 }
 
 

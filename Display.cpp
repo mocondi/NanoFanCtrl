@@ -36,19 +36,9 @@ bool NANO_DISPLAY::initDisplay() {
   delay(200);
 
   display.clearDisplay();
+  display.setTextColor(WHITE);
 
   return true;
-}
-
-void NANO_DISPLAY::setTitle() {
-    display.clearDisplay();
-    display.setTextColor(WHITE);
-
-    // Top title
-    display.setTextSize(2);
-    display.setCursor(0,0);
-    display.println("Temp   Fan");
-//    display.display();
 }
 
 void NANO_DISPLAY::setTempAndSpeed(float fTemp, int iFan, int iRPM)
@@ -56,7 +46,8 @@ void NANO_DISPLAY::setTempAndSpeed(float fTemp, int iFan, int iRPM)
     char cBuff[8];
 
     // Clear and set title
-    setTitle();
+    clearDisplay();
+    setMessage("Temp   Fan", 0, 2);
     
     const int yoffset = 22;
 
@@ -92,45 +83,39 @@ void NANO_DISPLAY::setTempAndSpeed(float fTemp, int iFan, int iRPM)
     display.display();
 }
 
-void NANO_DISPLAY::debug(int line, char *message)
+void NANO_DISPLAY::setMessage(char *aMessage, int aLine, int aSize)
 {
-      
-  display.setTextColor(WHITE);
-
   // Small size below yellow line
-  display.setTextSize(1);
-  switch(line)
+  display.setTextSize(aSize);
+  switch (aLine)
   {
-    case 0:
-      display.setCursor(0,0);
-      break;
-    case 1:
-      display.setCursor(0,20);
-      break;
-    case 2:
-      display.setCursor(0,30);
-      break;
-    case 3:
-      display.setCursor(0,40);
-      break;
-    case 4:
-      display.setCursor(0,50);
-      break;
-    default:
-      display.setCursor(0,20);
-      break;
+  case 0:
+    display.setCursor(0, OFFSET_ZERO);
+    break;
+  case 1:
+    display.setCursor(0, OFFSET_ONE);
+    break;
+  case 2:
+    display.setCursor(0, OFFSET_TWO);
+    break;
+  case 3:
+    display.setCursor(0, OFFSET_THREE);
+    break;
+  case 4:
+    display.setCursor(0, OFFSET_FOUR);
+    break;
+  default:
+    display.setCursor(0, OFFSET_ONE);
+    break;
   }
 
-  display.println(message);
+  display.println(aMessage);
 }
 
-void NANO_DISPLAY::debugWrite()
-{
+void NANO_DISPLAY::updateDisplay() {
   display.display();
 }
 
-void NANO_DISPLAY::debugClear()
-{
+void NANO_DISPLAY::clearDisplay() {
   display.clearDisplay();
 }
-

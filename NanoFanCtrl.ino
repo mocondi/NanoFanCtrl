@@ -15,8 +15,6 @@
 #include "Config.h"
 #include "Debug.h"
 
-bool gDebugMode = false;
-//int index = 25;
 int keypadKey = KEY_NONE;
 int newKey = KEY_NONE;
 int controlState = STATE_IDLE;
@@ -34,22 +32,21 @@ void setup()
   // Serial port debug print speed
   Serial.begin(9600);
 
+  // Init our software modules
   if(!NANO_DISPLAY::initDisplay()) {
     Serial.println(F("OLED or driver failed!"));
   }
-
-  // Init our software modules
   M_TEMPERATURE::initTemperature();
-  initFan();
+  M_FAN::initFan();
   M_CONTROL::initControl();
   KEY_PAD::initKeypad();
 
   // Start with fan off
-  controlFanSpeed(0);
+  M_FAN::controlFanSpeed(0);
 
   // If keypad left arrow pressed during startup, set to debug mode
   if (KEY_PAD::getKeypadVolts() <= 100) {
-    gDebugMode = true;
+    controlState = STATE_DEBUG;
   }
 
   PT_INIT(&pt1);  // initialise the two
@@ -60,28 +57,29 @@ void setup()
 
 // Process keypad inputs
 static int keypadThread(struct pt *pt, int interval) {
-  
+  Serial.println(F("Started keypadThread()"));
   static unsigned long timestamp = 0;
-  static char message[124];
-  static char ctemp[32];
   PT_BEGIN(pt);
   while(1) { // never stop 
+
     newKey = KEY_PAD::readKeypad();
+Serial.println(F("a"));
     if (keypadKey != newKey) {
-      controlState = newKey;
+      keypadKey = newKey;
       KEY_PAD::processKeyStates(controlState, keypadKey);
     } 
-
+Serial.println(F("b"));
     PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
     timestamp = millis(); // take a new timestamp
     M_CONTROL::toggleLED();
+Serial.println(F("c"));
   }
   PT_END(pt);
-  
 }
 
 // Process work
 static int workerThread(struct pt *pt, int interval) {
+  Serial.println(F("Started workerThread()"));
   static unsigned long timestamp = 0;
   PT_BEGIN(pt);
   while(1) {
@@ -93,12 +91,11 @@ static int workerThread(struct pt *pt, int interval) {
       M_CONTROL::handleFanControl();
       break;
     case STATE_CONFIG:
-      M_CONFIG::handleConfig();
+      M_CONFIG::handleConfig(keypadKey);
       break;
     case STATE_DEBUG:
     default:
-      M_DEBUG::debugIO();
-      //M_DEBUG::debugKeypad();
+      M_DEBUG::handleDebug(keypadKey);
       break;
     }    
 

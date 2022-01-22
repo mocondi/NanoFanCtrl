@@ -1,6 +1,7 @@
 #pragma once
-
-extern void initFan();
-extern int getFanSpeed();
-extern void controlFanSpeed(int percent);
-
+namespace M_FAN
+{
+  void initFan();
+  int getFanSpeed();
+  void controlFanSpeed(int percent);
+}
