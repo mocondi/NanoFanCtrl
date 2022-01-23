@@ -57,6 +57,7 @@ bool KEY_PAD::readKeypad(int *aKey)
   return false;
 }
 
+/*
 void KEY_PAD::processKeyStates(int &aState, int aKey)
 {
   switch (aState)
@@ -74,7 +75,7 @@ void KEY_PAD::processKeyStates(int &aState, int aKey)
   default:
     break;
   }
-/*
+
   switch(aKey)
   {
     case KEY_LEFT:
@@ -92,9 +93,9 @@ void KEY_PAD::processKeyStates(int &aState, int aKey)
     default:
       break;  
   }
-//*/
-}
 
+}
+*/
 
 
 

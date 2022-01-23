@@ -68,8 +68,8 @@ static int KeypadThread(struct pt *pt, int aInterval)
   while (1) {
     // Do something
     PT_WAIT_UNTIL(pt, KEY_PAD::readKeypad(&oldKeyPadKey) == true);
-//    if ((!keypadTrigger) && oldKeyPadKey != keypadKey) {
-    if (!keypadTrigger) {
+    if ((!keypadTrigger) && oldKeyPadKey != keypadKey) {
+//    if (!keypadTrigger) {
       keypadKey = oldKeyPadKey;
       keypadTrigger = true;
       Serial.print("Key   : ");
@@ -123,22 +123,27 @@ static int ControlThread(struct pt *pt, int aInterval)
     case STATE_IDLE:
     case STATE_CONTROL:
       controlState = M_CONTROL::ProcessFanControl(keypadKey);
-      if (keypadKey != KEY_NONE) {
-        keypadKey = KEY_NONE;
-        keypadTrigger = false;
-      }
+//      if (keypadKey != KEY_NONE) {
+//        keypadKey = KEY_NONE;
+//        keypadTrigger = false;
+//      }
       break;
     case STATE_CONFIG:
       controlState = M_CONFIG::ProcessConfig(keypadKey);
-      if (controlState == STATE_CONTROL) {
-        keypadTrigger = false;
-      }
+//      if (controlState == STATE_CONTROL) {
+//        keypadTrigger = false;
+//      }
    
       break;
     case STATE_DEBUG:
     default:
 //      M_DEBUG::handleDebug(keypadKey);
       break;
+    }
+    
+    if (keypadKey != KEY_NONE) {
+      keypadKey = KEY_NONE;
+      keypadTrigger = false;
     }
 
     PT_WAIT_UNTIL(pt, millis() - timestamp > aInterval);

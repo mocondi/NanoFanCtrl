@@ -5,7 +5,7 @@ namespace KEY_PAD
   void initKeypad();
   int getKeypadVolts();
   bool readKeypad(int *aKey);
-  void processKeyStates(int &aState, int aKey);
+//  void processKeyStates(int &aState, int aKey);
 }
 
 

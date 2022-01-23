@@ -54,9 +54,10 @@ void M_CONTROL::UpdateControlDisplay()
 
 int M_CONTROL::ProcessFanControl(int &aKey)
 {
+/*
   Serial.print(F("handleFanControl(): "));
   Serial.println(aKey);
-
+*/
   // Hendle keys
   if (aKey != KEY_NONE) return STATE_CONFIG;
 
