@@ -19,7 +19,10 @@ typedef struct _PAIR{
 
 //extern int fanSpeed;
 _PAIR tempTable[MAX_TABLE];
-int setSpeed = 20;
+volatile static float probeTemp = 0;
+volatile static int setSpeed = 0;
+volatile static int fanSpeed = 0;
+
 //const int minFanSpeed = 25; // Min speed in percentage
 const int maxFanSpeed = 100; // Max speed in percentage
 //bool gIsRunning = false;
@@ -49,7 +52,7 @@ void M_CONTROL::initControl()
 
 void M_CONTROL::UpdateControlDisplay()
 {
-  NANO_DISPLAY::setTempAndSpeed(12, 34, 56);
+  NANO_DISPLAY::setTempAndSpeed(probeTemp, setSpeed, 56);
 }
 
 int M_CONTROL::ProcessFanControl(int &aKey)
@@ -61,20 +64,8 @@ int M_CONTROL::ProcessFanControl(int &aKey)
   // Hendle keys
   if (aKey != KEY_NONE) return STATE_CONFIG;
 
-  return STATE_CONTROL;
-}
-
-/*
-int M_CONTROL::handleFanControl(int &aKey)
-{
-  Serial.print(F("handleFanControl(): "));
-  Serial.println(aKey);
-  
-  // Hendle keys
-  if (aKey != KEY_NONE) return STATE_CONFIG;
-
   // Read temperature
-  float probeTemp = M_TEMPERATURE::sampleTemperature();
+  probeTemp = M_TEMPERATURE::sampleTemperature();
 
   // Set fan speed
   setSpeed = processFanControl(probeTemp);
@@ -82,11 +73,11 @@ int M_CONTROL::handleFanControl(int &aKey)
   // Control fan speed
   M_FAN::controlFanSpeed(setSpeed);
 
-// MJO getFanSpeed() kills kb task!  
+  // MJO getFanSpeed() kills kb task!  
   // Read fan speed
   //int fanSpeed = M_FAN::getFanSpeed(); 
-int fanSpeed =9;
-  NANO_DISPLAY::setTempAndSpeed(probeTemp, setSpeed, fanSpeed);
+//  int fanSpeed = 9;
+//  NANO_DISPLAY::setTempAndSpeed(probeTemp, setSpeed, fanSpeed);
 
   return STATE_CONTROL;
 }
@@ -111,7 +102,7 @@ int M_CONTROL::processFanControl(float temperature)
   }
 
 }
-*/
+
 void M_CONTROL::toggleLED() {
   boolean ledstate = digitalRead(LED_BUILTIN); // get LED state
   ledstate ^= 1;   // toggle LED state using xor

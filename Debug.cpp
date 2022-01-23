@@ -17,9 +17,13 @@ void M_DEBUG::UpdateDebugDisplay()
   NANO_DISPLAY::refreshDisplay();
 }
 
-void M_DEBUG::handleDebug(int aKey)
+int M_DEBUG::ProcessDebug(int &aKey)
 {
-  debugIO();
+//  debugIO();
+  if (aKey != KEY_NONE) {
+    return STATE_CONTROL;
+  }
+  return STATE_DEBUG;
 }
 
 void M_DEBUG::debugIO()

@@ -2,7 +2,7 @@
 namespace M_DEBUG
 {
   void UpdateDebugDisplay();
-  void handleDebug(int aKey);
+  int ProcessDebug(int &aKey);
   void debugIO();
   void debugKeypad();
 }

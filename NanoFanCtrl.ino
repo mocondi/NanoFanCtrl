@@ -15,6 +15,7 @@
 #include "Tools.h"
 #include "Config.h"
 #include "Debug.h"
+
 int keypadKey = KEY_NONE;
 int oldKeyPadKey = KEY_NONE;
 volatile bool keypadTrigger = false;
@@ -58,7 +59,6 @@ void setup()
   Serial.println(F("setup() completed..."));
 }
 
-
 // Keypad input thread
 static int KeypadThread(struct pt *pt, int aInterval)
 {
@@ -66,18 +66,14 @@ static int KeypadThread(struct pt *pt, int aInterval)
   Serial.println(F("Started KeypadThread()"));
   static unsigned long timestamp = 0;
   while (1) {
-    // Do something
+    // Capture analog keypad inputs
     PT_WAIT_UNTIL(pt, KEY_PAD::readKeypad(&oldKeyPadKey) == true);
     if ((!keypadTrigger) && oldKeyPadKey != keypadKey) {
-//    if (!keypadTrigger) {
       keypadKey = oldKeyPadKey;
       keypadTrigger = true;
       Serial.print("Key   : ");
       Serial.println(keypadKey);
     }
-// Set flag to handle keypad
-//    PT_WAIT_UNTIL(pt, millis() - timestamp > interval);
-//    timestamp = millis();
   }
   PT_END(pt);
 }
@@ -117,30 +113,23 @@ static int ControlThread(struct pt *pt, int aInterval)
   Serial.println(F("Started ControlThread()"));
   static unsigned long timestamp = 0;
   while (1) {
-    // Do something
+    // Process the current state
     switch (controlState)
     {
     case STATE_IDLE:
     case STATE_CONTROL:
       controlState = M_CONTROL::ProcessFanControl(keypadKey);
-//      if (keypadKey != KEY_NONE) {
-//        keypadKey = KEY_NONE;
-//        keypadTrigger = false;
-//      }
       break;
     case STATE_CONFIG:
       controlState = M_CONFIG::ProcessConfig(keypadKey);
-//      if (controlState == STATE_CONTROL) {
-//        keypadTrigger = false;
-//      }
-   
       break;
     case STATE_DEBUG:
     default:
-//      M_DEBUG::handleDebug(keypadKey);
+      controlState = M_DEBUG::ProcessDebug(keypadKey);
       break;
     }
-    
+
+    // Reset keypad input trigger after processing
     if (keypadKey != KEY_NONE) {
       keypadKey = KEY_NONE;
       keypadTrigger = false;
@@ -165,5 +154,3 @@ void loop() {
 
 
 }
-
-//*/
