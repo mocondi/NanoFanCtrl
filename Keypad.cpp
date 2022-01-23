@@ -12,7 +12,7 @@
 const int KeypadPin =	    A0;
 int keyValues[KEY_NONE];
 
-#define KEY_SAMPLE_COUNT  5
+#define KEY_SAMPLE_COUNT  20
 
 void KEY_PAD::initKeypad()
 {
@@ -32,23 +32,29 @@ int KEY_PAD::getKeypadVolts()
   return TOOLS::getMilliVoltsFromAnalog(KeypadPin);
 }
 
-int KEY_PAD::readKeypad()
+bool KEY_PAD::readKeypad(int *aKey)
 {
   int ivolt = TOOLS::getMilliVoltsFromAnalog(KeypadPin, KEY_SAMPLE_COUNT);
 
   // Check idle and voltage source
   if (ivolt >= (DEFAULT_NONE-V_OFFSET) && ivolt <= (DEFAULT_NONE-V_OFFSET)) {
-    return KEY_NONE;
+//    *aKey = KEY_NONE;
+//    return true;
+    return false;
   }
-  if (ivolt < 10) return KEY_LEFT;
+  if (ivolt < 10) {
+    *aKey = KEY_LEFT;
+    return true;
+  }
 
   for (int i=KEY_LEFT; i<KEY_NONE; i++) {
     if (ivolt >= (keyValues[i] - V_OFFSET) && ivolt <= (keyValues[i] + V_OFFSET)) {
-      return i;
+      *aKey = i;
+      return true;
     }
   }
 
-  return KEY_NONE;
+  return false;
 }
 
 void KEY_PAD::processKeyStates(int &aState, int aKey)

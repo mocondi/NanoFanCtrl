@@ -11,15 +11,26 @@
 
 int configMenuItem = MENU_SEL_TEMP_SEL;
 
-int M_CONFIG::handleConfig(int &aKey)
+void M_CONFIG::UpdateConfigDisplay()
+{
+  NANO_DISPLAY::clearDisplay();
+  NANO_DISPLAY::setMessage("Config Tmp", 0, 2);
+  NANO_DISPLAY::setMessage("Enter to start", 1, 1);
+  NANO_DISPLAY::refreshDisplay();
+}
+
+int M_CONFIG::ProcessConfig(int &aKey)
 {
   Serial.print(F("handleConfig() aKey: "));
   Serial.print(aKey);
   Serial.print(F(" MenuItem: "));
   Serial.println(configMenuItem);
 
-//  if (aKey == KEY_NONE) return STATE_CONFIG;
-//*
+  if (aKey != KEY_NONE) {
+    aKey = KEY_NONE;
+    return STATE_CONTROL;
+  }
+/*
   NANO_DISPLAY::clearDisplay();
   switch (configMenuItem)
   {
@@ -57,7 +68,7 @@ int M_CONFIG::handleConfig(int &aKey)
     break;
   }
   aKey = KEY_NONE;
-  NANO_DISPLAY::updateDisplay();
-
+  NANO_DISPLAY::refreshDisplay();
+*/
   return STATE_CONFIG;
 }

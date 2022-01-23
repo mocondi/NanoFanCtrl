@@ -10,6 +10,13 @@
 #include "Display.h"
 #include "Keypad.h"
 
+void M_DEBUG::UpdateDebugDisplay()
+{
+  NANO_DISPLAY::clearDisplay();
+  NANO_DISPLAY::setMessage("Debug", 0, 2);
+  NANO_DISPLAY::refreshDisplay();
+}
+
 void M_DEBUG::handleDebug(int aKey)
 {
   debugIO();
@@ -33,7 +40,7 @@ void M_DEBUG::debugIO()
   sprintf(message, "Tach: %d", A2_Tach);
   NANO_DISPLAY::setMessage(message, 3, 1);
 
-  NANO_DISPLAY::updateDisplay();
+  NANO_DISPLAY::refreshDisplay();
 }
 
 void M_DEBUG::debugKeypad()
@@ -42,7 +49,9 @@ void M_DEBUG::debugKeypad()
   NANO_DISPLAY::setMessage(0, "Keypad Debug");
   char message[128];
 
-  switch(KEY_PAD::readKeypad())
+  int key = 0;
+  if (!KEY_PAD::readKeypad(&key)) return;
+  switch(key)
   {
     case KEY_LEFT:
       sprintf(message, "LEFT");
@@ -67,7 +76,7 @@ void M_DEBUG::debugKeypad()
       break;
   }
   NANO_DISPLAY::setMessage(message, 1, 2);
-  NANO_DISPLAY::updateDisplay();
+  NANO_DISPLAY::refreshDisplay();
 
 }
 

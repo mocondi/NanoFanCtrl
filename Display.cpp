@@ -25,7 +25,6 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 
 bool NANO_DISPLAY::initDisplay() {
-
   // Enable LCD power
   pinMode(OLED_POWER, OUTPUT);
   digitalWrite(OLED_POWER, LOW);
@@ -112,7 +111,7 @@ void NANO_DISPLAY::setMessage(char *aMessage, int aLine, int aSize)
   display.println(aMessage);
 }
 
-void NANO_DISPLAY::updateDisplay() {
+void NANO_DISPLAY::refreshDisplay() {
   display.display();
 }
 

@@ -47,6 +47,23 @@ void M_CONTROL::initControl()
     tempTable[5].percent = 90;
   }
 
+void M_CONTROL::UpdateControlDisplay()
+{
+  NANO_DISPLAY::setTempAndSpeed(12, 34, 56);
+}
+
+int M_CONTROL::ProcessFanControl(int &aKey)
+{
+  Serial.print(F("handleFanControl(): "));
+  Serial.println(aKey);
+
+  // Hendle keys
+  if (aKey != KEY_NONE) return STATE_CONFIG;
+
+  return STATE_CONTROL;
+}
+
+/*
 int M_CONTROL::handleFanControl(int &aKey)
 {
   Serial.print(F("handleFanControl(): "));
@@ -93,7 +110,7 @@ int M_CONTROL::processFanControl(float temperature)
   }
 
 }
-
+*/
 void M_CONTROL::toggleLED() {
   boolean ledstate = digitalRead(LED_BUILTIN); // get LED state
   ledstate ^= 1;   // toggle LED state using xor

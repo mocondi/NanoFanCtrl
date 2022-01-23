@@ -12,7 +12,7 @@ namespace NANO_DISPLAY
   bool initDisplay();
   void setTempAndSpeed(float fTemp, int iFan, int iRPM);
   void setMessage(char *aMessage, int aLine = 1, int aSize = 1);
-  void updateDisplay();
+  void refreshDisplay();
   void clearDisplay();
 /*
   void debug(int line, char *message);

@@ -1,8 +1,9 @@
 #pragma once
 namespace M_CONFIG
 {
+  void UpdateConfigDisplay();
   // process config screen IO and return state
-  int handleConfig(int &aKey);
+  int ProcessConfig(int &aKey);
 }
 
 enum {

@@ -2,8 +2,10 @@
 namespace M_CONTROL
 {
   void initControl();
-  int handleFanControl(int &aKey);
-  int processFanControl(float temperature);
+  void UpdateControlDisplay();
+  int ProcessFanControl(int &aKey);
+  //int handleFanControl(int &aKey);
+  //int processFanControl(float temperature);
 
   void toggleLED();
   void heartBeatLED();

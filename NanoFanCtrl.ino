@@ -4,6 +4,7 @@
 *
 * By: Mark Ocondi
 */
+//*
 #include <pt.h> // Protothreads 3rd party library, Near-true multi-task
 
 #include "Display.h"
@@ -14,19 +15,13 @@
 #include "Tools.h"
 #include "Config.h"
 #include "Debug.h"
-
 int keypadKey = KEY_NONE;
 int oldKeyPadKey = KEY_NONE;
-int controlState = STATE_IDLE;
-//int fanSpeed;
-//unsigned long highTime; //= pulseIn(FanTach, HIGH);  // read high time
-//unsigned long lowTime; // pulseIn(FanTach, LOW);    // read low time
-
-//const int FanTach =  A2;
-//static const int keypadIntrval = 1000;
-static const int keypadIntrval = 250;   // Speed (ms) of kyepad input 
-static const int workerInterval = 500;//1000; // Speed (ms) of fan control processing
-static struct pt pt1, pt2; // each protothread needs one of these
+volatile bool keypadTrigger = false;
+volatile int controlState = STATE_IDLE;
+static struct pt pt1, pt2, pt3; // each protothread needs one of these
+static const int displayInterval = 250;
+static const int controlInterval = 500;
 
 // MAIN SETUP /////////////////////////////////////////////////////////////////
 void setup()
@@ -40,7 +35,7 @@ void setup()
   Serial.begin(9600);
 
   // Init our software modules
-  if(!NANO_DISPLAY::initDisplay()) {
+  if (!NANO_DISPLAY::initDisplay()) {
     Serial.println(F("OLED or driver failed!"));
   }
   M_TEMPERATURE::initTemperature();
@@ -58,81 +53,112 @@ void setup()
 
   PT_INIT(&pt1);  // initialise the two
   PT_INIT(&pt2);  // protothread variables
+  PT_INIT(&pt3);
 
   Serial.println(F("setup() completed..."));
 }
 
-// Process keypad inputs
-static int keypadThread(struct pt *pt, int interval) {
+
+// Keypad input thread
+static int KeypadThread(struct pt *pt, int aInterval)
+{
   PT_BEGIN(pt);
+  Serial.println(F("Started KeypadThread()"));
   static unsigned long timestamp = 0;
-  Serial.println(F("Started keypadThread()"));
-
-  while(1) { // never stop 
-
-    oldKeyPadKey = KEY_PAD::readKeypad();
-//    if ( (keypadKey == KEY_NONE) && oldKeyPadKey != keypadKey) {
+  while (1) {
+    // Do something
+    PT_WAIT_UNTIL(pt, KEY_PAD::readKeypad(&oldKeyPadKey) == true);
+//    if ((!keypadTrigger) && oldKeyPadKey != keypadKey) {
+    if (!keypadTrigger) {
       keypadKey = oldKeyPadKey;
-//      KEY_PAD::processKeyStates(controlState, keypadKey);
-//    } 
-
-    PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
-    timestamp = millis(); // take a new timestamp
-    M_CONTROL::toggleLED();
+      keypadTrigger = true;
+      Serial.print("Key   : ");
+      Serial.println(keypadKey);
+    }
+// Set flag to handle keypad
+//    PT_WAIT_UNTIL(pt, millis() - timestamp > interval);
+//    timestamp = millis();
   }
   PT_END(pt);
 }
 
-// Process work
-static int workerThread(struct pt *pt, int interval) {
+// OLED Display thread
+static int DisplayThread(struct pt *pt, int aInterval)
+{
   PT_BEGIN(pt);
-  Serial.println(F("Started workerThread()"));
+  Serial.println(F("Started DisplayThread()"));
   static unsigned long timestamp = 0;
-  while(1) {
+  while (1) 
+  {
+      switch (controlState) {
+      case STATE_IDLE:
+      case STATE_CONTROL:
+        M_CONTROL::UpdateControlDisplay();
+        break;
+      case STATE_CONFIG:
+        M_CONFIG::UpdateConfigDisplay();
+        break;
+      case STATE_DEBUG:
+        M_DEBUG::UpdateDebugDisplay();
+      default:
+        break;
+      }
+
+    PT_WAIT_UNTIL(pt, millis() - timestamp > aInterval);
+    timestamp = millis();
+  }
+  PT_END(pt);
+}
+
+// Contorl thread
+static int ControlThread(struct pt *pt, int aInterval)
+{
+  PT_BEGIN(pt);
+  Serial.println(F("Started ControlThread()"));
+  static unsigned long timestamp = 0;
+  while (1) {
+    // Do something
     switch (controlState)
     {
     case STATE_IDLE:
     case STATE_CONTROL:
-      controlState = M_CONTROL::handleFanControl(keypadKey);
-      if (controlState == STATE_CONFIG) {
-        interval = keypadIntrval;
+      controlState = M_CONTROL::ProcessFanControl(keypadKey);
+      if (keypadKey != KEY_NONE) {
+        keypadKey = KEY_NONE;
+        keypadTrigger = false;
       }
       break;
     case STATE_CONFIG:
-      controlState = M_CONFIG::handleConfig(keypadKey);
+      controlState = M_CONFIG::ProcessConfig(keypadKey);
       if (controlState == STATE_CONTROL) {
-        interval = workerInterval;
+        keypadTrigger = false;
       }
+   
       break;
     case STATE_DEBUG:
     default:
-      M_DEBUG::handleDebug(keypadKey);
+//      M_DEBUG::handleDebug(keypadKey);
       break;
     }
 
-    PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
+    PT_WAIT_UNTIL(pt, millis() - timestamp > aInterval);
     timestamp = millis();
-
- //   Serial.println(F("Crip!"));
   }
   PT_END(pt);
 }
 
-
 // MAIN LOOP /////////////////////////////////////////////////////////////////
-static unsigned long counter =0;
+static unsigned long counter = 0;
 void loop() {
+  KeypadThread(&pt1, NULL);
+  DisplayThread(&pt2, displayInterval);
+  ControlThread(&pt3, controlInterval);
+
   // schedule the two protothreads that run indefinitely
-  keypadThread(&pt1, keypadIntrval);  // Process every .5 seconds
-  workerThread(&pt2, workerInterval);       // Process every 1 second
-/* 
- if (++counter >= 50000 ) {
-   counter =0;
-   highTime  = pulseIn(FanTach, HIGH);  // read high time
-   lowTime = pulseIn(FanTach, LOW);    // read low time
-   M_CONTROL::toggleLED();
-   }
-*/ 
+  //  keypadThread(&pt1, keypadIntrval);  // Process every .5 seconds
+  //  workerThread(&pt2, workerInterval);       // Process every 1 second
+
 
 }
 
+//*/
