@@ -71,10 +71,10 @@ static int keypadThread(struct pt *pt, int interval) {
   while(1) { // never stop 
 
     oldKeyPadKey = KEY_PAD::readKeypad();
-    if ( (keypadKey == KEY_NONE) && oldKeyPadKey != keypadKey) {
+//    if ( (keypadKey == KEY_NONE) && oldKeyPadKey != keypadKey) {
       keypadKey = oldKeyPadKey;
 //      KEY_PAD::processKeyStates(controlState, keypadKey);
-    } 
+//    } 
 
     PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
     timestamp = millis(); // take a new timestamp

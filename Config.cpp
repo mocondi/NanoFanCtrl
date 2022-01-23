@@ -18,7 +18,7 @@ int M_CONFIG::handleConfig(int &aKey)
   Serial.print(F(" MenuItem: "));
   Serial.println(configMenuItem);
 
-  if (aKey == KEY_NONE) return STATE_CONFIG;
+//  if (aKey == KEY_NONE) return STATE_CONFIG;
 //*
   NANO_DISPLAY::clearDisplay();
   switch (configMenuItem)
@@ -28,6 +28,7 @@ int M_CONFIG::handleConfig(int &aKey)
     NANO_DISPLAY::setMessage("Enter to start", 1, 1);
     NANO_DISPLAY::setMessage("Left or Right to exit", 2, 1);
     if(aKey == KEY_LEFT) {
+      configMenuItem = MENU_SEL_TEMP_SEL;
       aKey = KEY_NONE;
       return STATE_CONTROL;
     }

@@ -70,13 +70,13 @@ void NANO_DISPLAY::setTempAndSpeed(float fTemp, int iFan, int iRPM)
     memset(cBuff, NULL, sizeof(cBuff));
     //    itoa(iFan, cBuff, 10);
     char cFan[8];
-    sprintf(cFan, "%d%%", iFan);
+    sprintf(cFan, "%3d%%", iFan);
     display.println(cFan);
 
     // Fan RPM reading
 //    display.setTextSize(2);
     display.setCursor(30, 51);
-    sprintf(cFan, "%d RPM", iRPM);
+    sprintf(cFan, "%4d RPM", iRPM);
     display.println(cFan);
 
     // Write to display

@@ -20,9 +20,9 @@ typedef struct _PAIR{
 //extern int fanSpeed;
 _PAIR tempTable[MAX_TABLE];
 int setSpeed = 20;
-const int minFanSpeed = 25; // Min speed in percentage
+//const int minFanSpeed = 25; // Min speed in percentage
 const int maxFanSpeed = 100; // Max speed in percentage
-bool gIsRunning = false;
+//bool gIsRunning = false;
 bool loopIttr = false;
 
 
