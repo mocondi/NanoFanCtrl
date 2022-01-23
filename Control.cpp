@@ -8,6 +8,7 @@
 #include "Temperature.h"
 #include "Fan.h"
 #include "Display.h"
+#include "Keypad.h"
 
 typedef struct _PAIR{
   float temp;
@@ -46,8 +47,14 @@ void M_CONTROL::initControl()
     tempTable[5].percent = 90;
   }
 
-void M_CONTROL::handleFanControl()
+int M_CONTROL::handleFanControl(int &aKey)
 {
+  Serial.print(F("handleFanControl(): "));
+  Serial.println(aKey);
+  
+  // Hendle keys
+  if (aKey != KEY_NONE) return STATE_CONFIG;
+
   // Read temperature
   float probeTemp = M_TEMPERATURE::sampleTemperature();
 
@@ -62,6 +69,8 @@ void M_CONTROL::handleFanControl()
   //int fanSpeed = M_FAN::getFanSpeed(); 
 int fanSpeed =9;
   NANO_DISPLAY::setTempAndSpeed(probeTemp, setSpeed, fanSpeed);
+
+  return STATE_CONTROL;
 }
 
 int M_CONTROL::processFanControl(float temperature)

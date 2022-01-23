@@ -16,6 +16,7 @@
 #include "Debug.h"
 
 int keypadKey = KEY_NONE;
+int oldKeyPadKey = KEY_NONE;
 int controlState = STATE_IDLE;
 //int fanSpeed;
 //unsigned long highTime; //= pulseIn(FanTach, HIGH);  // read high time
@@ -23,8 +24,8 @@ int controlState = STATE_IDLE;
 
 //const int FanTach =  A2;
 //static const int keypadIntrval = 1000;
-static const int keypadIntrval = 500;
-static const int workerInterval = 1000;
+static const int keypadIntrval = 250;   // Speed (ms) of kyepad input 
+static const int workerInterval = 500;//1000; // Speed (ms) of fan control processing
 static struct pt pt1, pt2; // each protothread needs one of these
 
 // MAIN SETUP /////////////////////////////////////////////////////////////////
@@ -69,9 +70,10 @@ static int keypadThread(struct pt *pt, int interval) {
 
   while(1) { // never stop 
 
-    keypadKey = KEY_PAD::readKeypad();
-    if (KEY_NONE != keypadKey) {
-      KEY_PAD::processKeyStates(controlState, keypadKey);
+    oldKeyPadKey = KEY_PAD::readKeypad();
+    if ( (keypadKey == KEY_NONE) && oldKeyPadKey != keypadKey) {
+      keypadKey = oldKeyPadKey;
+//      KEY_PAD::processKeyStates(controlState, keypadKey);
     } 
 
     PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
@@ -91,10 +93,16 @@ static int workerThread(struct pt *pt, int interval) {
     {
     case STATE_IDLE:
     case STATE_CONTROL:
-      M_CONTROL::handleFanControl();
+      controlState = M_CONTROL::handleFanControl(keypadKey);
+      if (controlState == STATE_CONFIG) {
+        interval = keypadIntrval;
+      }
       break;
     case STATE_CONFIG:
-      M_CONFIG::handleConfig(keypadKey);
+      controlState = M_CONFIG::handleConfig(keypadKey);
+      if (controlState == STATE_CONTROL) {
+        interval = workerInterval;
+      }
       break;
     case STATE_DEBUG:
     default:
@@ -102,8 +110,10 @@ static int workerThread(struct pt *pt, int interval) {
       break;
     }
 
-    PT_WAIT_UNTIL(pt, millis() - timestamp > workerInterval );
+    PT_WAIT_UNTIL(pt, millis() - timestamp > interval );
     timestamp = millis();
+
+ //   Serial.println(F("Crip!"));
   }
   PT_END(pt);
 }

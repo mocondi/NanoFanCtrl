@@ -16,7 +16,7 @@ int keyValues[KEY_NONE];
 
 void KEY_PAD::initKeypad()
 {
-//  pinMode(KeypadPin, INPUT);
+  pinMode(KeypadPin, INPUT);
 //  pinMode(KeypadPin, INPUT_PULLUP);
 
   keyValues[KEY_LEFT]   = DEFAULT_LEFT;
@@ -53,12 +53,6 @@ int KEY_PAD::readKeypad()
 
 void KEY_PAD::processKeyStates(int &aState, int aKey)
 {
-/*
-char message[124];
-printf(message, "processKeyStates() state: %d,  key: %d", aState, aKey);;
-Serial.println(message);
-*/
-//*
   switch (aState)
   {
   case STATE_IDLE:
@@ -68,13 +62,13 @@ Serial.println(message);
     else aState = STATE_CONFIG;    
     break;
   case STATE_CONFIG:
-    if (aKey == KEY_ENTER) aState = STATE_CONTROL;
+    // Config will pull state out or after timeout
     break;
   case STATE_DEBUG:
   default:
     break;
   }
-
+/*
   switch(aKey)
   {
     case KEY_LEFT:

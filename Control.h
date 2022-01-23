@@ -2,7 +2,7 @@
 namespace M_CONTROL
 {
   void initControl();
-  void handleFanControl();
+  int handleFanControl(int &aKey);
   int processFanControl(float temperature);
 
   void toggleLED();
