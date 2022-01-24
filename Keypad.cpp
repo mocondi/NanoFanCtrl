@@ -38,8 +38,6 @@ bool KEY_PAD::readKeypad(int *aKey)
 
   // Check idle and voltage source
   if (ivolt >= (DEFAULT_NONE-V_OFFSET) && ivolt <= (DEFAULT_NONE-V_OFFSET)) {
-//    *aKey = KEY_NONE;
-//    return true;
     return false;
   }
   if (ivolt < 10) {

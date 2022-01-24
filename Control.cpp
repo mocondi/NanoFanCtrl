@@ -24,7 +24,6 @@ volatile static int fanSpeed = 0;
 
 //const int minFanSpeed = 25; // Min speed in percentage
 const int maxFanSpeed = 100; // Max speed in percentage
-//bool gIsRunning = false;
 bool loopIttr = false;
 
 
@@ -76,10 +75,6 @@ int M_CONTROL::ProcessFanControl(int &aKey)
   // Read fan speed
   fanSpeed = M_FAN::getFanSpeed();
 
-//Serial.print("fanSpeed: ");
-//Serial.println(fanSpeed);
-
-//  fanSpeed = 0;
   return STATE_CONTROL;
 }
 
@@ -125,7 +120,6 @@ void M_CONTROL::heartBeatLED()
     delay(hDelay);
     loopIttr = false;
   } else {
-//    delay(hOff);
     delay(180);
     loopIttr = true;
   }

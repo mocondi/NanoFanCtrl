@@ -37,6 +37,21 @@ bool NANO_DISPLAY::initDisplay() {
   display.clearDisplay();
   display.setTextColor(WHITE);
 
+
+    display.clearDisplay();
+ 
+  for(int16_t i=max(display.width(),display.height())/2; i>0; i-=5) {
+    // The INVERSE color is used so triangles alternate white/black
+    display.fillTriangle(
+      display.width()/2  , display.height()/2-i,
+      display.width()/2-i, display.height()/2+i,
+      display.width()/2+i, display.height()/2+i, SSD1306_INVERSE);
+    display.display();
+    delay(1);
+  }
+ 
+  delay(1000);
+
   return true;
 }
 
