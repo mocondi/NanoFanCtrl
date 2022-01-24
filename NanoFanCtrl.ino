@@ -89,7 +89,7 @@ static int DisplayThread(struct pt *pt, int aInterval)
   static unsigned long timestamp = 0;
   while (1) 
   {
-Serial.println(F("shit"));
+//Serial.println(F("shit"));
       switch (controlState) {
       case STATE_IDLE:
       case STATE_CONTROL:

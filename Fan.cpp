@@ -33,12 +33,12 @@ int M_FAN::getFanSpeed()
 //  return 1;
 //  unsigned long highTime = pulseIn(FanTach, HIGH);  // read high time
 //  unsigned long lowTime = pulseIn(FanTach, LOW);    // read low time
-  // 5000000 = 5 sec 5000 250000
-highTime = pulseIn(FanTach, HIGH, 250000);  // read high time
-lowTime = pulseIn(FanTach, LOW, 250000);    // read low time
+  // 5000000 = 5 sec, 250000 .25 seconds
+highTime = pulseIn(FanTach, HIGH, 50000);  // read high time
+lowTime = pulseIn(FanTach, LOW, 50000);    // read low time
 
   float period = highTime + lowTime;                // Period = Ton + Toff
-//* 
+/* 
 Serial.print("Pusle Hi: ");
 Serial.println(highTime);
 Serial.print("Pusle Low: ");
