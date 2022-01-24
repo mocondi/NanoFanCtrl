@@ -8,7 +8,7 @@ namespace KEY_PAD
 }
 
 
-#define POWER_USB 1
+//#define POWER_USB 1
 
 #ifndef POWER_USB
   #define DEFAULT_LEFT    0     // 

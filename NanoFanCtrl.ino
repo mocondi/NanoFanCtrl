@@ -20,9 +20,12 @@ int keypadKey = KEY_NONE;
 int oldKeyPadKey = KEY_NONE;
 volatile bool keypadTrigger = false;
 volatile int controlState = STATE_IDLE;
-static struct pt pt1, pt2, pt3; // each protothread needs one of these
-static const int displayInterval = 250;
-static const int controlInterval = 500;
+static struct pt pt1, pt2, pt3, pt4; // each protothread needs one of these
+static const int displayInterval = 800;//250;
+static const int controlInterval = 1000;
+
+extern volatile unsigned long highTime;
+extern volatile unsigned long lowTime;
 
 // MAIN SETUP /////////////////////////////////////////////////////////////////
 void setup()
@@ -86,6 +89,7 @@ static int DisplayThread(struct pt *pt, int aInterval)
   static unsigned long timestamp = 0;
   while (1) 
   {
+Serial.println(F("shit"));
       switch (controlState) {
       case STATE_IDLE:
       case STATE_CONTROL:
@@ -113,6 +117,15 @@ static int ControlThread(struct pt *pt, int aInterval)
   Serial.println(F("Started ControlThread()"));
   static unsigned long timestamp = 0;
   while (1) {
+//    highTime = pulseIn(A2, HIGH);  // read high time
+//    lowTime = pulseIn(A2, LOW);    // read low time
+//PT_WAIT_UNTIL(pt, millis() - timestamp > 128);
+/*
+Serial.print("Pusle Hi: ");
+Serial.println(highTime);
+Serial.print("Pusle Low: ");
+Serial.println(lowTime);
+*/
     // Process the current state
     switch (controlState)
     {
@@ -141,16 +154,41 @@ static int ControlThread(struct pt *pt, int aInterval)
   PT_END(pt);
 }
 
+static int PulseThread(struct pt *pt, int aInterval)
+{
+  PT_BEGIN(pt);
+  Serial.println(F("Started PulseThread()"));
+  static unsigned long timestamp = 0;
+  while (1) {
+    highTime = pulseIn(A2, HIGH);  // read high time
+   lowTime = pulseIn(A2, LOW);    // read low time
+/*   
+Serial.print("Pusle Hi: ");
+Serial.println(highTime);
+Serial.print("Pusle Low: ");
+SerialS.println(lowTime);
+*/
+    PT_WAIT_UNTIL(pt, millis() - timestamp > aInterval);
+    timestamp = millis();
+  }
+  PT_END(pt);
+}
+
 // MAIN LOOP /////////////////////////////////////////////////////////////////
 static unsigned long counter = 0;
 void loop() {
   KeypadThread(&pt1, NULL);
   DisplayThread(&pt2, displayInterval);
   ControlThread(&pt3, controlInterval);
+//  PulseThread(&pt4, 1000);
 
   // schedule the two protothreads that run indefinitely
   //  keypadThread(&pt1, keypadIntrval);  // Process every .5 seconds
   //  workerThread(&pt2, workerInterval);       // Process every 1 second
-
-
+/*
+  if(counter++ >= 8000) {
+    highTime = pulseIn(A2, HIGH);  // read high time
+    lowTime = pulseIn(A2, LOW);    // read low time
+  }
+*/
 }

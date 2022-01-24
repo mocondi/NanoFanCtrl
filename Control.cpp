@@ -17,7 +17,6 @@ typedef struct _PAIR{
 
 #define MAX_TABLE 6
 
-//extern int fanSpeed;
 _PAIR tempTable[MAX_TABLE];
 volatile static float probeTemp = 0;
 volatile static int setSpeed = 0;
@@ -52,7 +51,7 @@ void M_CONTROL::initControl()
 
 void M_CONTROL::UpdateControlDisplay()
 {
-  NANO_DISPLAY::setTempAndSpeed(probeTemp, setSpeed, 56);
+  NANO_DISPLAY::setTempAndSpeed(probeTemp, setSpeed, fanSpeed);
 }
 
 int M_CONTROL::ProcessFanControl(int &aKey)
@@ -75,10 +74,12 @@ int M_CONTROL::ProcessFanControl(int &aKey)
 
   // MJO getFanSpeed() kills kb task!  
   // Read fan speed
-  //int fanSpeed = M_FAN::getFanSpeed(); 
-//  int fanSpeed = 9;
-//  NANO_DISPLAY::setTempAndSpeed(probeTemp, setSpeed, fanSpeed);
+  fanSpeed = M_FAN::getFanSpeed();
 
+//Serial.print("fanSpeed: ");
+//Serial.println(fanSpeed);
+
+//  fanSpeed = 0;
   return STATE_CONTROL;
 }
 
