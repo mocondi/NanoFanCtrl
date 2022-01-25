@@ -7,6 +7,9 @@
 #define OFFSET_FOUR   50
 #define OFFSET_FIVE   60
 
+#define MAX_TABLE     6
+
+
 namespace NANO_DISPLAY
 {
   bool initDisplay();
@@ -18,6 +21,11 @@ namespace NANO_DISPLAY
   void showArrowIcons();
   void test();
 }
+
+typedef struct _PAIR {
+  float temp;
+  int percent;
+} PAIR;
 
 
 /*  

@@ -176,7 +176,15 @@ void NANO_DISPLAY::setTempAndSpeed(float aTemp, int aFan, int aRPM)
 
 void NANO_DISPLAY::setConfigData(float aTemp, int aPercent)
 {
+  char message[128];
+  char ftemp[16];
+  dtostrf(aTemp, 3, 1, ftemp);
+  sprintf(message, "Temp: %s", ftemp);
+  setMessage(message, 2, 2);
 
+  itoa(aPercent, ftemp, 10);
+  sprintf(message, "Percent: %s", ftemp);
+  setMessage(message, 3, 2);
 }
 
 void NANO_DISPLAY::setMessage(char *aMessage, int aLine, int aSize)

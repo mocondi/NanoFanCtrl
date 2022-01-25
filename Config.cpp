@@ -9,7 +9,10 @@
 #include "Display.h"
 #include "Keypad.h"
 
+extern volatile _PAIR tempTable[MAX_TABLE];
+
 int configMenuItem = MENU_SEL_TEMP_SEL;
+volatile int configTableIndex = 0;
 
 void M_CONFIG::UpdateConfigDisplay()
 {
@@ -22,6 +25,7 @@ void M_CONFIG::UpdateConfigDisplay()
     break;
   case MENU_SEL_TEMP_ADJ:
     NANO_DISPLAY::setMessage("Adjust Tmp", 0, 2);
+//    NANO_DISPLAY::setConfigData(tempTable[configTableIndex].temp, tempTable[configTableIndex].percent);
     break;
   case MENU_SEL_KEYPAD_SEL:
     NANO_DISPLAY::setMessage("Config Key", 0, 2);
@@ -50,6 +54,7 @@ int M_CONFIG::ProcessConfig(int &aKey)
   switch (configMenuItem)
   {
   case MENU_SEL_TEMP_SEL:
+  {
     if (aKey == KEY_LEFT) {
       return STATE_CONTROL;
     }
@@ -57,19 +62,23 @@ int M_CONFIG::ProcessConfig(int &aKey)
       configMenuItem = MENU_SEL_TEMP_SEL;
       return STATE_DEBUG;
     }
-    else if ( (aKey == KEY_DOWN) || (aKey == KEY_ENTER)) {
+    else if ((aKey == KEY_DOWN) || (aKey == KEY_ENTER)) {
       configMenuItem = MENU_SEL_TEMP_ADJ;
     }
+  }
     break;
   case MENU_SEL_TEMP_ADJ:
+  {
     if (aKey == KEY_ENTER) {
       configMenuItem = MENU_SEL_TEMP_SEL;
       return STATE_CONTROL;
     }
+  }
     break;
   case MENU_SEL_KEYPAD_SEL:
+  {
     if (aKey == KEY_LEFT) {
-      configMenuItem = MENU_SEL_TEMP_SEL; 
+      configMenuItem = MENU_SEL_TEMP_SEL;
     }
     else if (aKey == KEY_RIGHT) {
       configMenuItem = MENU_SEL_TEMP_SEL;
@@ -78,12 +87,15 @@ int M_CONFIG::ProcessConfig(int &aKey)
     else if ((aKey == KEY_DOWN) || (aKey == KEY_ENTER)) {
       configMenuItem = MENU_SEL_KEYPAD_ADJ;
     }
+  }
     break;
   case MENU_SEL_KEYPAD_ADJ:
+  {
     if (aKey == KEY_ENTER) {
       configMenuItem = MENU_SEL_TEMP_SEL;
       return STATE_CONTROL;
     }
+  }
     break;
   case MENU_SEL_LAST:
   default:

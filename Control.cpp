@@ -10,14 +10,8 @@
 #include "Display.h"
 #include "Keypad.h"
 
-typedef struct _PAIR{
-  float temp;
-  int percent;
-} PAIR;
 
-#define MAX_TABLE 6
-
-_PAIR tempTable[MAX_TABLE];
+volatile _PAIR tempTable[MAX_TABLE];
 volatile static float probeTemp = 0;
 volatile static int setSpeed = 0;
 volatile static int fanSpeed = 0;
@@ -29,19 +23,19 @@ bool loopIttr = false;
 
 void M_CONTROL::initControl()
 {
-    tempTable[0].temp = 72.0F;
+    tempTable[0].temp = 75.0F;
     tempTable[0].percent = 30;
 
-    tempTable[1].temp = 75.0F;
+    tempTable[1].temp = 80.0F;
     tempTable[1].percent = 35;
 
-    tempTable[2].temp = 80.0F;
+    tempTable[2].temp = 85.0F;
     tempTable[2].percent = 50;
 
-    tempTable[3].temp = 85.0F;
+    tempTable[3].temp = 90.0F;
     tempTable[3].percent = 75;
 
-    tempTable[4].temp = 90.0F;
+    tempTable[4].temp = 95.0F;
     tempTable[4].percent = 80;
 
     tempTable[5].temp = 100.0F;
@@ -66,7 +60,7 @@ int M_CONTROL::ProcessFanControl(int &aKey)
   probeTemp = M_TEMPERATURE::sampleTemperature();
 
   // Set fan speed
-  setSpeed = processFanControl(probeTemp);
+  setSpeed = GetFanSpeedFromTemp(probeTemp);
 
   // Control fan speed
   M_FAN::controlFanSpeed(setSpeed);
@@ -78,25 +72,33 @@ int M_CONTROL::ProcessFanControl(int &aKey)
   return STATE_CONTROL;
 }
 
-int M_CONTROL::processFanControl(float temperature)
+int M_CONTROL::GetFanSpeedFromTemp(float temperature)
 {
+//  Serial.print(F("processFanControl(): "));
+//  Serial.println(temperature);
+
   // 1st if below lowest disable fan
   if (temperature < tempTable[0].temp) {
+//Serial.println("return below level");
     return 0;
   }
   // 2nd if above max
   if (temperature >= tempTable[MAX_TABLE - 1].temp) {
+//Serial.println("return above max");
     return maxFanSpeed;
   }
 
   // Control from table
-  for( int i =1; i < MAX_TABLE; i++) {
-    if ((temperature > tempTable[i].temp) && 
+  for( int i =0; i < MAX_TABLE; i++) {
+    if ((temperature >= tempTable[i].temp) && 
         (temperature <= tempTable[i+1].temp)) {
+//Serial.print("From table index: ");
+//Serial.println(i);
       return tempTable[i].percent;
     }
   }
-
+//Serial.println("Finished loop");
+  return 0;
 }
 
 void M_CONTROL::toggleLED() {
