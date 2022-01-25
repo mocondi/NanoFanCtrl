@@ -20,6 +20,183 @@
 
 const int OLED_POWER = 4;
 
+/*
+#define LOGO_HEIGHT   16
+#define LOGO_WIDTH    16
+static const unsigned char PROGMEM logo_bmp[] =
+{ B00000000, B11000000,
+  B00000001, B11000000,
+  B00000001, B11000000,
+  B00000011, B11100000,
+  B11110011, B11100000,
+  B11111110, B11111000,
+  B01111110, B11111111,
+  B00110011, B10011111,
+  B00011111, B11111100,
+  B00001101, B01110000,
+  B00011011, B10100000,
+  B00111111, B11100000,
+  B00111111, B11110000,
+  B01111100, B11110000,
+  B01110000, B01110000,
+  B00000000, B00110000 };
+
+//defining House Icon
+byte housechar1[8] = { B00000, B00001, B00011, B00011, //Row 0, Col 0
+                  B00111, B01111, B01111, B11111, };
+byte housechar2[8] = { B11111, B11111, B11100, B11100, //Row 1, Col 0
+                  B11100, B11100, B11100, B11100, };
+byte housechar3[8] = { B00000, B10010, B11010, B11010, //ROW 0, Col 1
+                  B11110, B11110, B11110, B11111, };
+byte housechar4[8] = { B11111, B11111, B11111, B10001, //Row 1, Col 1
+                    B10001, B10001, B11111, B11111, };
+//Definining Termometer Icon
+byte tempchar1[8] = { B00000, B00001, B00010, B00100, //Row 0, Col 2
+                  B00100, B00100, B00100, B00111, };
+byte tempchar2[8] = { B00111, B00111, B00111, B01111, //Row 1, Col 2
+                  B11111, B11111, B01111, B00011, };
+byte tempchar3[8] = { B00000, B10000, B01011, B00100, //ROW 0, Col 3
+                  B00111, B00100, B00111, B11100, };
+byte tempchar4[8] = { B11111, B11100, B11100, B11110, //Row 1, Col 3
+                  B11111, B11111, B11110, B11000, };
+
+//Defining Humidity Icon
+byte humchar1[8] = { B00000, B00001, B00011, B00011,
+                  B00111, B01111, B01111, B11111, };
+byte humchar2[8] = { B11111, B11111, B11111, B01111,
+                  B00011, B00000, B00000, B00000, };
+byte humchar3[8] = { B00000, B10000, B11000, B11000,
+                  B11100, B11110, B11110, B11111, };
+byte humchar4[8] = { B11111, B11111, B11111, B11110,
+                  B11100, B00000, B00000, B00000, };
+
+uint16_t wifiHotspot_icon_W = 16;
+uint16_t wifiHotspot_icon_H = 16;
+static const unsigned char PROGMEM wifiHotspot_icon[] = {
+B00000000, B00000000,
+B00000000, B00000000,
+B00000000, B00000000,
+B00100000, B00000100,
+B01001000, B00010010,
+B01010010, B01001010,
+B01010100, B00101010,
+B01010101, B10101010,
+B01010101, B10101010,
+B01010100, B00101010,
+B01010010, B01001010,
+B01001000, B00010010,
+B00100000, B00000100,
+B00000000, B00000000,
+B00000000, B00000000,
+B00000000, B00000000
+};
+
+static const uint8_t image_data_Down[32] = {
+    0xfa, 0xaf,
+    0xf7, 0xef,
+    0xff, 0x4f,
+    0xf6, 0xef,
+    0xff, 0x5f,
+    0xf6, 0xcf,
+    0xff, 0x6f,
+    0x55, 0x52,
+    0x7d, 0xa8,
+    0xb6, 0x95,
+    0xcd, 0x53,
+    0xf6, 0xaf,
+    0xf2, 0x8f,
+    0xfd, 0x5f,
+    0xfd, 0xbf,
+    0xfe, 0x7f
+};
+const
+
+typedef struct {
+  const uint8_t *data;
+  uint16_t width;
+  uint16_t height;
+  uint8_t dataSize;
+} tImage;
+*/
+
+
+static const unsigned char PROGMEM icon_LeftArrow[] = {
+  0x01, 0x80,
+  0x03, 0x80,
+  0x07, 0x80,
+  0x0f, 0x80,
+  0x1f, 0xff,
+  0x3f, 0xff,
+  0x7f, 0xff,
+  0xff, 0xff,
+  0xff, 0xff,
+  0x7f, 0xff,
+  0x3f, 0xff,
+  0x1f, 0xff,
+  0x0f, 0x80,
+  0x07, 0x80,
+  0x03, 0x80,
+  0x01, 0x80
+};
+
+static const unsigned char PROGMEM icon_RightArrow[] = {
+  0x01, 0x80,
+  0x01, 0xc0,
+  0x01, 0xe0,
+  0x01, 0xf0,
+  0xff, 0xf8,
+  0xff, 0xfc,
+  0xff, 0xfe,
+  0xff, 0xff,
+  0xff, 0xff,
+  0xff, 0xfe,
+  0xff, 0xfc,
+  0xff, 0xf8,
+  0x01, 0xf0,
+  0x01, 0xe0,
+  0x01, 0xc0,
+  0x01, 0x80
+};
+
+static const unsigned char PROGMEM icon_UpArrow[] = {
+  0x01, 0x80,
+  0x03, 0xc0,
+  0x07, 0xe0,
+  0x0f, 0xf0,
+  0x1f, 0xf8,
+  0x3f, 0xfc,
+  0x7f, 0xfe,
+  0xff, 0xff,
+  0xff, 0xff,
+  0x0f, 0xf0,
+  0x0f, 0xf0,
+  0x0f, 0xf0,
+  0x0f, 0xf0,
+  0x0f, 0xf0,
+  0x0f, 0xf0,
+  0x0f, 0xf0
+};
+
+static const unsigned char PROGMEM icon_DownArrow[] = {
+  0x0f, 0xf0,
+  0x0f, 0xf0,
+  0x0f, 0xf0,
+  0x0f, 0xf0,
+  0x0f, 0xf0,
+  0x0f, 0xf0,
+  0x0f, 0xf0,
+  0xff, 0xff,
+  0xff, 0xff,
+  0x7f, 0xfe,
+  0x3f, 0xfc,
+  0x1f, 0xf8,
+  0x0f, 0xf0,
+  0x07, 0xe0,
+  0x03, 0xc0,
+  0x01, 0x80
+};
+
+
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
@@ -97,6 +274,11 @@ void NANO_DISPLAY::setTempAndSpeed(float fTemp, int iFan, int iRPM)
     display.display();
 }
 
+void NANO_DISPLAY::setConfigData(void *data)
+{
+
+}
+
 void NANO_DISPLAY::setMessage(char *aMessage, int aLine, int aSize)
 {
   // Small size below yellow line
@@ -132,4 +314,16 @@ void NANO_DISPLAY::refreshDisplay() {
 
 void NANO_DISPLAY::clearDisplay() {
   display.clearDisplay();
+}
+
+void NANO_DISPLAY::test()
+{
+  display.clearDisplay();
+
+  display.drawBitmap(0, 0, icon_LeftArrow, 16, 16, 1);
+  display.drawBitmap(32, 0, icon_UpArrow, 16, 16, 1);
+  display.drawBitmap(64, 0, icon_DownArrow, 16, 16, 1);
+  display.drawBitmap(96, 0, icon_RightArrow, 16, 16, 1);
+
+  display.display();
 }

@@ -61,6 +61,15 @@ void setup()
 
   Serial.println(F("setup() completed..."));
 }
+///////////////////////////////////////////////////////////////////////////////
+
+void test()
+{
+  NANO_DISPLAY::test();
+
+  M_CONTROL::toggleLED();
+  delay(500);
+}
 
 // Keypad input thread
 static int KeypadThread(struct pt *pt, int aInterval)
@@ -89,20 +98,19 @@ static int DisplayThread(struct pt *pt, int aInterval)
   static unsigned long timestamp = 0;
   while (1) 
   {
-//Serial.println(F("shit"));
-      switch (controlState) {
-      case STATE_IDLE:
-      case STATE_CONTROL:
-        M_CONTROL::UpdateControlDisplay();
-        break;
-      case STATE_CONFIG:
-        M_CONFIG::UpdateConfigDisplay();
-        break;
-      case STATE_DEBUG:
-        M_DEBUG::UpdateDebugDisplay();
-      default:
-        break;
-      }
+    switch (controlState) {
+    case STATE_IDLE:
+    case STATE_CONTROL:
+      M_CONTROL::UpdateControlDisplay();
+      break;
+    case STATE_CONFIG:
+      M_CONFIG::UpdateConfigDisplay();
+      break;
+    case STATE_DEBUG:
+      M_DEBUG::UpdateDebugDisplay();
+    default:
+      break;
+    }
 
     PT_WAIT_UNTIL(pt, millis() - timestamp > aInterval);
     timestamp = millis();
@@ -117,15 +125,7 @@ static int ControlThread(struct pt *pt, int aInterval)
   Serial.println(F("Started ControlThread()"));
   static unsigned long timestamp = 0;
   while (1) {
-//    highTime = pulseIn(A2, HIGH);  // read high time
-//    lowTime = pulseIn(A2, LOW);    // read low time
-//PT_WAIT_UNTIL(pt, millis() - timestamp > 128);
-/*
-Serial.print("Pusle Hi: ");
-Serial.println(highTime);
-Serial.print("Pusle Low: ");
-Serial.println(lowTime);
-*/
+
     // Process the current state
     switch (controlState)
     {
@@ -162,12 +162,7 @@ static int PulseThread(struct pt *pt, int aInterval)
   while (1) {
     highTime = pulseIn(A2, HIGH);  // read high time
    lowTime = pulseIn(A2, LOW);    // read low time
-/*   
-Serial.print("Pusle Hi: ");
-Serial.println(highTime);
-Serial.print("Pusle Low: ");
-SerialS.println(lowTime);
-*/
+
     PT_WAIT_UNTIL(pt, millis() - timestamp > aInterval);
     timestamp = millis();
   }
@@ -175,20 +170,12 @@ SerialS.println(lowTime);
 }
 
 // MAIN LOOP /////////////////////////////////////////////////////////////////
-static unsigned long counter = 0;
 void loop() {
+  test();
+/*
   KeypadThread(&pt1, NULL);
   DisplayThread(&pt2, displayInterval);
   ControlThread(&pt3, controlInterval);
-//  PulseThread(&pt4, 1000);
-
-  // schedule the two protothreads that run indefinitely
-  //  keypadThread(&pt1, keypadIntrval);  // Process every .5 seconds
-  //  workerThread(&pt2, workerInterval);       // Process every 1 second
-/*
-  if(counter++ >= 8000) {
-    highTime = pulseIn(A2, HIGH);  // read high time
-    lowTime = pulseIn(A2, LOW);    // read low time
-  }
 */
 }
+//////////////////////////////////////////////////////////////////////////////
