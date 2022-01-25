@@ -171,11 +171,11 @@ static int PulseThread(struct pt *pt, int aInterval)
 
 // MAIN LOOP /////////////////////////////////////////////////////////////////
 void loop() {
-  test();
-/*
+//  test();
+//*
   KeypadThread(&pt1, NULL);
   DisplayThread(&pt2, displayInterval);
   ControlThread(&pt3, controlInterval);
-*/
+//*/
 }
 //////////////////////////////////////////////////////////////////////////////
