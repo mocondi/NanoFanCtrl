@@ -5,13 +5,14 @@
 */
 #include "Tools.h"
 
+//static struct pt_sem full, empty;
 // Analog input array
 volatile ANALOG_CHANNEL ADInputs[MAX_ANALOGS];
 
 void TOOLS::InitAnalogData()
 {
   for (int i = 0; i < MAX_ANALOGS; i++) {
-    ADInputs[i].min = 0xffffffff;
+    ADInputs[i].min = (int)BIT_TEN;
     ADInputs[i].max = 0;
     ADInputs[i].avg = 0;
   }  
@@ -19,6 +20,8 @@ void TOOLS::InitAnalogData()
 
 void TOOLS::SampleAnalogs()
 {
+  InitAnalogData();
+
   // Iterate through sample count
   for (int s = 0; s < MAX_ANALOG_SAMPLES; s++) {
     // Iterate though each channel
@@ -40,7 +43,25 @@ void TOOLS::SampleAnalogs()
   for (int i = 0; i < MAX_ANALOGS; i++) {
     ADInputs[i].avg /= MAX_ANALOG_SAMPLES;
   }
-//Serial.println(F("AAAAA"));
+
+char message[124];
+char ctemp[32];
+for (int i = 0; i < MAX_ANALOGS; i++) {
+
+  itoa(ADInputs[i].max, ctemp, 10);
+  sprintf(message, "Channel %d, Max: %s ", i, ctemp);
+  Serial.print(message);
+
+  itoa(ADInputs[i].min, ctemp, 10);
+  sprintf(message, ",Min: %s ", ctemp);
+  Serial.print(message);
+
+  itoa(ADInputs[i].avg, ctemp, 10);
+  sprintf(message, ",Avg: %s", ctemp);
+  Serial.println(message);
+
+  Serial.println();
+}
 }
 
 int TOOLS::ReadAnalogChannel(int aChannel) {
@@ -51,7 +72,7 @@ int TOOLS::ReadAnalogChannel(int aChannel) {
   // Use average
   int avgVO = ADInputs[aChannel].avg;
   if (avgVO <= 0) return 0;
-  int volts = (int)(((float)avgVO * 5000.0F) / 1024.0F);
+  int volts = (int)(((float)avgVO * MILLI_VOLT_MAX) / BIT_TEN);
   return volts;
 }
 /*

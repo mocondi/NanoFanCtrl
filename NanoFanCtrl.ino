@@ -6,6 +6,8 @@
 */
 
 #include <pt.h> // Protothreads 3rd party library, Near-true multi-task
+#include <pt-sem.h>
+
 #include "Display.h"
 #include "Temperature.h"
 #include "Fan.h"
@@ -15,13 +17,18 @@
 #include "Config.h"
 #include "Debug.h"
 
+#define PT_USE_TIMER
+#define PT_USE_SEM
+
+static struct pt_sem full, empty;
 int keypadKey = KEY_NONE;
 int oldKeyPadKey = KEY_NONE;
 volatile bool keypadTrigger = false;
 //volatile int controlState = STATE_DEBUG;// STATE_CONFIG;// STATE_IDLE;
-volatile int controlState = STATE_DEBUG;
+volatile int controlState = STATE_IDLE;
 static struct pt pt1, pt2, pt3, pt4; // each protothread needs one of these
-static const int displayInterval = 800;//250;
+static const int keypadInterval = 1000;
+static const int displayInterval = 1000;
 static const int controlInterval = 1000;
 
 extern volatile unsigned long highTime;
@@ -58,6 +65,10 @@ void setup()
     controlState = STATE_DEBUG;
   }
 */
+
+  PT_SEM_INIT(&empty, 0);
+  PT_SEM_INIT(&full, 1);
+
   PT_INIT(&pt1);  // initialise the two
   PT_INIT(&pt2);  // protothread variables
   PT_INIT(&pt3);
@@ -94,10 +105,13 @@ void test()
 // Keypad input thread
 static int KeypadThread(struct pt *pt, int aInterval)
 {
+
   PT_BEGIN(pt);
   Serial.println(F("Started KeypadThread()"));
   static unsigned long timestamp = 0;
   while (1) {
+
+/*
     // Capture analog keypad inputs
     PT_WAIT_UNTIL(pt, KEY_PAD::readKeypad(&oldKeyPadKey) == true);
     if ((!keypadTrigger) && oldKeyPadKey != keypadKey) {
@@ -106,6 +120,17 @@ static int KeypadThread(struct pt *pt, int aInterval)
       Serial.print("Key   : ");
       Serial.println(keypadKey);
     }
+*/
+//Serial.println("Key 1");
+    PT_SEM_WAIT(pt, &full);
+//Serial.println("Key 2");
+    TOOLS::SampleAnalogs();
+    PT_SEM_SIGNAL(pt, &empty);
+//Serial.println("Key 3");
+
+    PT_WAIT_UNTIL(pt, millis() - timestamp > aInterval);
+    timestamp = millis();
+//Serial.println("Key 4");
   }
   PT_END(pt);
 }
@@ -118,6 +143,7 @@ static int DisplayThread(struct pt *pt, int aInterval)
   static unsigned long timestamp = 0;
   while (1) 
   {
+
     switch (controlState) {
     case STATE_IDLE:
     case STATE_CONTROL:
@@ -153,7 +179,12 @@ static int ControlThread(struct pt *pt, int aInterval)
     case STATE_IDLE:
     case STATE_CONTROL:
 //      aInterval = oldInterval;
+//Serial.println("Ctrl 1");
+      PT_SEM_WAIT(pt, &empty);
+//Serial.println("Ctrl 2");
       controlState = M_CONTROL::ProcessFanControl(keypadKey);
+      PT_SEM_SIGNAL(pt, &full);
+//Serial.println("Ctrl 3");
       break;
     case STATE_CONFIG:
       controlState = M_CONFIG::ProcessConfig(keypadKey);
@@ -196,7 +227,7 @@ static int PulseThread(struct pt *pt, int aInterval)
 void loop() {
 //  test();
 //*
-  KeypadThread(&pt1, NULL);
+  KeypadThread(&pt1, keypadInterval);
   DisplayThread(&pt2, displayInterval);
   ControlThread(&pt3, controlInterval);
 //*/

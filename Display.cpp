@@ -171,12 +171,30 @@ bool NANO_DISPLAY::initDisplay() {
 
 void NANO_DISPLAY::setTempAndSpeed(float aTemp, int aFan, int aRPM)
 {
-    char cBuff[8];
+  Serial.println(F("setTempAndSpeed()"));
+/*
+  char message[124];
+  char ctemp[32];
+  dtostrf(aTemp, 4, 1, ctemp);
+  sprintf(message, "setTempAndSpeed(): %s ,", ctemp);
+  Serial.print(message);
+
+  itoa(aFan, ctemp, 10);
+  sprintf(message, "%s ,", ctemp);
+  Serial.print(message);
+
+  itoa(aRPM, ctemp, 10);
+  sprintf(message, "%s", ctemp);
+  Serial.println(message);
+*/
+
+/*
 
     // Clear and set title
     clearDisplay();
     setMessage("Temp   Fan", 0, 2);
-    
+
+    char cBuff[8];
     const int yoffset = 22;
 
     // Temperature
@@ -196,19 +214,18 @@ void NANO_DISPLAY::setTempAndSpeed(float aTemp, int aFan, int aRPM)
     display.setTextSize(2);
     display.setCursor(80, yoffset);
     memset(cBuff, NULL, sizeof(cBuff));
-    //    itoa(aFan, cBuff, 10);
     char cFan[8];
     sprintf(cFan, "%3d%%", aFan);
     display.println(cFan);
 
     // Fan RPM reading
-//    display.setTextSize(2);
     display.setCursor(30, 51);
     sprintf(cFan, "%4d RPM", aRPM);
     display.println(cFan);
 
     // Write to display
     display.display();
+*/
 }
 
 void NANO_DISPLAY::setConfigData(float aTemp, int aPercent)

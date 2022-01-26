@@ -13,6 +13,8 @@
 // Other defs
 #define MAX_ANALOGS         3
 #define MAX_ANALOG_SAMPLES  10
+#define BIT_TEN             1024
+#define MILLI_VOLT_MAX      5000
 
 typedef struct
 {

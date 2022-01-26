@@ -34,8 +34,8 @@ int KEY_PAD::getKeypadVolts()
 bool KEY_PAD::readKeypad(int *aKey)
 {
   // We will be sampling all the analogs here used for this function and external functions
-  TOOLS::SampleAnalogs();
-  return false;
+//  TOOLS::SampleAnalogs();
+//  return false;
 
 //Serial.println(F("1"));
 //  int ivolt = TOOLS::GetMilliVoltsFromAnalog(KEYBOARD_PIN, KEY_SAMPLE_COUNT);
