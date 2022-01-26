@@ -4,9 +4,8 @@
 *
 * By: Mark Ocondi
 */
-//*
-#include <pt.h> // Protothreads 3rd party library, Near-true multi-task
 
+#include <pt.h> // Protothreads 3rd party library, Near-true multi-task
 #include "Display.h"
 #include "Temperature.h"
 #include "Fan.h"
@@ -19,7 +18,8 @@
 int keypadKey = KEY_NONE;
 int oldKeyPadKey = KEY_NONE;
 volatile bool keypadTrigger = false;
-volatile int controlState = STATE_IDLE;
+//volatile int controlState = STATE_DEBUG;// STATE_CONFIG;// STATE_IDLE;
+volatile int controlState = STATE_DEBUG;
 static struct pt pt1, pt2, pt3, pt4; // each protothread needs one of these
 static const int displayInterval = 800;//250;
 static const int controlInterval = 1000;
@@ -42,6 +42,7 @@ void setup()
   if (!NANO_DISPLAY::initDisplay()) {
     Serial.println(F("OLED or driver failed!"));
   }
+  TOOLS::InitAnalogData();
   M_TEMPERATURE::initTemperature();
   M_FAN::initFan();
   M_CONTROL::initControl();
@@ -51,10 +52,12 @@ void setup()
   M_FAN::controlFanSpeed(0);
 
   // If keypad left arrow pressed during startup, set to debug mode
+  TOOLS::SampleAnalogs();
+/*
   if (KEY_PAD::getKeypadVolts() <= 100) {
     controlState = STATE_DEBUG;
   }
-
+*/
   PT_INIT(&pt1);  // initialise the two
   PT_INIT(&pt2);  // protothread variables
   PT_INIT(&pt3);
@@ -65,10 +68,27 @@ void setup()
 
 void test()
 {
-  NANO_DISPLAY::test();
+//  NANO_DISPLAY::test();
+//  M_CONTROL::toggleLED();
+  char message[32];
+  char messageB[32];
+  int iData = 123;
+  float fData = 123.4;
+  Serial.println();
+  if (TOOLS::GetFromFloat(fData, message) == true) {
+    Serial.println(message);
+  }
+  else {
+    Serial.println(F("GetFromFloat() error!"));
+  }
+  if (TOOLS::GetFromInteger(iData, messageB) == true) {
+    Serial.println(messageB);
+  }
+  else {
+    Serial.println(F("GetFromInteger() error!"));
+  }
 
-  M_CONTROL::toggleLED();
-  delay(500);
+  delay(2000);
 }
 
 // Keypad input thread
@@ -124,6 +144,7 @@ static int ControlThread(struct pt *pt, int aInterval)
   PT_BEGIN(pt);
   Serial.println(F("Started ControlThread()"));
   static unsigned long timestamp = 0;
+  //int oldInterval = aInterval;
   while (1) {
 
     // Process the current state
@@ -131,6 +152,7 @@ static int ControlThread(struct pt *pt, int aInterval)
     {
     case STATE_IDLE:
     case STATE_CONTROL:
+//      aInterval = oldInterval;
       controlState = M_CONTROL::ProcessFanControl(keypadKey);
       break;
     case STATE_CONFIG:
@@ -139,6 +161,7 @@ static int ControlThread(struct pt *pt, int aInterval)
     case STATE_DEBUG:
     default:
       controlState = M_DEBUG::ProcessDebug(keypadKey);
+//      aInterval = 500;
       break;
     }
 

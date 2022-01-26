@@ -10,17 +10,35 @@
 #include "Display.h"
 #include "Keypad.h"
 
+volatile int AD[NUM_ANALOG_INPUTS];
+
 void M_DEBUG::UpdateDebugDisplay()
 {
-  NANO_DISPLAY::clearDisplay();
-  NANO_DISPLAY::setMessage("Debug", 0, 2);
-  NANO_DISPLAY::refreshDisplay();
+//  NANO_DISPLAY::setDebugData(AD);
+//  NANO_DISPLAY::clearDisplay();
+//  NANO_DISPLAY::setMessage("Debug", 0, 2);
+//  NANO_DISPLAY::refreshDisplay();
+  debugIO();
 }
 
 int M_DEBUG::ProcessDebug(int &aKey)
 {
+/*
+  // Capture IO data
+  int pinIdx = PIN_A0;
+  for (int i = 0; i < NUM_ANALOG_INPUTS; i++) {
+    AD[i] = analogRead(pinIdx++);
+  }
+
+  AD[0] = analogRead(KEYBOARD_PIN);
+  AD[1] = analogRead(TEMPERATURE_PIN);
+  AD[2] = analogRead(FAN_TACH_PIN);
+*/
+
+  Serial.println(F("ProcessDebug()"));
+
 //  debugIO();
-  if (aKey != KEY_NONE) {
+  if (aKey != KEY_ENTER) {
     return STATE_CONTROL;
   }
   return STATE_DEBUG;
@@ -29,9 +47,9 @@ int M_DEBUG::ProcessDebug(int &aKey)
 void M_DEBUG::debugIO()
 {
   // Read all analogs and update voltages
-  int A0_Keypad = TOOLS::getMilliVoltsFromAnalog(A0, 10);
-  int A1_Temp = TOOLS::getMilliVoltsFromAnalog(A1, 10);
-  int A2_Tach = TOOLS::getMilliVoltsFromAnalog(A2);
+  int A0_Keypad = TOOLS::ReadAnalogChannel(A0);
+  int A1_Temp = TOOLS::ReadAnalogChannel(A1);
+  int A2_Tach = TOOLS::ReadAnalogChannel(A2);
 
   NANO_DISPLAY::clearDisplay();
   NANO_DISPLAY::setMessage("DEBUG :-)", 0, 2);

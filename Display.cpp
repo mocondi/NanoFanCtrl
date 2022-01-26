@@ -12,13 +12,12 @@
 #include <Adafruit_GFX.h> // 3rd party library Adafruit GFX 
 #include <Adafruit_SSD1306.h> // 3rd party library Adafruit SSD1306
 #include "Display.h"
+#include "Tools.h"
 
 #define SCREEN_WIDTH    128 // OLED display width, in pixels
 #define SCREEN_HEIGHT    64 // OLED display height, in pixels
 #define OLED_RESET       -1
 #define SCREEN_ADDRESS 0x3C
-
-const int OLED_POWER = 4;
 
 static const unsigned char PROGMEM icon_LeftArrow[] = {
   0x01, 0x80,
@@ -96,6 +95,43 @@ static const unsigned char PROGMEM icon_DownArrow[] = {
   0x01, 0x80
 };
 
+static const unsigned char PROGMEM icon_Smile[] = {
+  0x00, 0x00,
+  0x00, 0x00,
+  0x18, 0x18,
+  0x3c, 0x3c,
+  0x3c, 0x3c,
+  0x18, 0x18,
+  0x00, 0x00,
+  0x00, 0x00,
+  0x00, 0x00,
+  0x20, 0x04,
+  0x10, 0x08,
+  0x10, 0x08,
+  0x08, 0x10,
+  0x07, 0xe0,
+  0x00, 0x00,
+  0x00, 0x00
+};
+
+static const unsigned char PROGMEM icon_Home[] = {
+  0x01, 0x80,
+  0x02, 0x40,
+  0x04, 0x20,
+  0x08, 0x10,
+  0x10, 0x08,
+  0x3f, 0xfc,
+  0x50, 0x0a,
+  0x13, 0xc8,
+  0x12, 0x48,
+  0x12, 0x48,
+  0x13, 0xc8,
+  0x10, 0x08,
+  0x1f, 0xf8,
+  0x00, 0x00,
+  0x00, 0x00,
+  0x00, 0x00
+};
 
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
@@ -103,8 +139,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 bool NANO_DISPLAY::initDisplay() {
   // Enable LCD power
-  pinMode(OLED_POWER, OUTPUT);
-  digitalWrite(OLED_POWER, LOW);
+  pinMode(DISPLAY_POWER_PIN, OUTPUT);
+  digitalWrite(DISPLAY_POWER_PIN, LOW);
 
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) { // Address 0x3D for 128x64
       return false;
@@ -117,6 +153,7 @@ bool NANO_DISPLAY::initDisplay() {
 
     display.clearDisplay();
  
+  // Startup logo animation
   for(int16_t i=max(display.width(),display.height())/2; i>0; i-=5) {
     // The INVERSE color is used so triangles alternate white/black
     display.fillTriangle(
@@ -185,6 +222,39 @@ void NANO_DISPLAY::setConfigData(float aTemp, int aPercent)
   itoa(aPercent, ftemp, 10);
   sprintf(message, "Percent: %s", ftemp);
   setMessage(message, 3, 2);
+}
+
+void NANO_DISPLAY::setDebugData(int AD[8])
+{
+  display.clearDisplay();
+  display.drawBitmap(0, 0, icon_Smile, 16, 16, 1);
+  display.drawBitmap(96, 0, icon_Home, 16, 16, 1);
+
+
+  display.setTextSize(2);
+  const int Y_SPACE = 16;
+  int offset = 20;
+//*
+  char cMsg[128];
+  for (int i = 0; i < 3; i++) {
+    sprintf(cMsg, "AD %d: %d", i, AD[i]);
+    display.setCursor(0, offset);
+    display.println(cMsg);
+    offset += Y_SPACE;
+  }
+
+/*
+  offset = 16;
+  for (int i = 4; i < 8; i++) {
+    sprintf(cMsg, "AD %d: %d", i, AD[0]);
+    display.setCursor(64, offset);
+    display.println(cMsg);
+    offset += Y_SPACE;
+  }
+*/
+
+  display.display();
+
 }
 
 void NANO_DISPLAY::setMessage(char *aMessage, int aLine, int aSize)

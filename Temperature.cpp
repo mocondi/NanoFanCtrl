@@ -8,7 +8,6 @@
 #include "Tools.h"
 
 #define TEMP_SAMPLE_COUNT     10
-const int TempPin =				    A1;
 //const float MX =				  -26.0F;
 //const float B =				 4820.0F;
 //const float MX =				  -22.5F;
@@ -20,13 +19,13 @@ const float B =					4941.4F;
 
 void M_TEMPERATURE::initTemperature()
 {
-    pinMode(TempPin, INPUT);
-    pinMode(TempPin, INPUT_PULLUP);
+    pinMode(TEMPERATURE_PIN, INPUT);
+    pinMode(TEMPERATURE_PIN, INPUT_PULLUP);
 }
 
 float M_TEMPERATURE::sampleTempPower()
 {
-    return TOOLS::getMilliVoltsFromAnalog(TempPin, TEMP_SAMPLE_COUNT);
+    return TOOLS::ReadAnalogChannel(TEMPERATURE_PIN);
 }
 
 float M_TEMPERATURE::sampleTemperature()

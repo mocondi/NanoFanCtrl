@@ -9,15 +9,14 @@
 #include "Display.h"
 #include "Tools.h"
 
-const int KeypadPin =	    A0;
 int keyValues[KEY_NONE];
 
 #define KEY_SAMPLE_COUNT  20
 
 void KEY_PAD::initKeypad()
 {
-  pinMode(KeypadPin, INPUT);
-//  pinMode(KeypadPin, INPUT_PULLUP);
+  pinMode(KEYBOARD_PIN, INPUT);
+//  pinMode(KEYBOARD_PIN, INPUT_PULLUP);
 
   keyValues[KEY_LEFT]   = DEFAULT_LEFT;
   keyValues[KEY_UP]     = DEFAULT_UP;
@@ -29,13 +28,20 @@ void KEY_PAD::initKeypad()
 
 int KEY_PAD::getKeypadVolts()
 {
-  return TOOLS::getMilliVoltsFromAnalog(KeypadPin);
+  return TOOLS::ReadAnalogChannel(KEYBOARD_PIN);
 }
 
 bool KEY_PAD::readKeypad(int *aKey)
 {
-  int ivolt = TOOLS::getMilliVoltsFromAnalog(KeypadPin, KEY_SAMPLE_COUNT);
+  // We will be sampling all the analogs here used for this function and external functions
+  TOOLS::SampleAnalogs();
+  return false;
 
+//Serial.println(F("1"));
+//  int ivolt = TOOLS::GetMilliVoltsFromAnalog(KEYBOARD_PIN, KEY_SAMPLE_COUNT);
+  int ivolt = TOOLS::ReadAnalogChannel(KEYBOARD_PIN);
+
+//Serial.println(F("2"));
   // Check idle and voltage source
   if (ivolt >= (DEFAULT_NONE-V_OFFSET) && ivolt <= (DEFAULT_NONE-V_OFFSET)) {
     return false;
