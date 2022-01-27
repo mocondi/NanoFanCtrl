@@ -13,6 +13,7 @@
 #include <Adafruit_SSD1306.h> // 3rd party library Adafruit SSD1306
 #include "Display.h"
 #include "Tools.h"
+#include "Debug.h"
 
 #define SCREEN_WIDTH    128 // OLED display width, in pixels
 #define SCREEN_HEIGHT    64 // OLED display height, in pixels
@@ -145,14 +146,11 @@ bool NANO_DISPLAY::initDisplay() {
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) { // Address 0x3D for 128x64
       return false;
   }
-  delay(200);
+  delay(20);
 
   display.clearDisplay();
   display.setTextColor(WHITE);
 
-
-    display.clearDisplay();
- 
   // Startup logo animation
   for(int16_t i=max(display.width(),display.height())/2; i>0; i-=5) {
     // The INVERSE color is used so triangles alternate white/black
@@ -163,69 +161,75 @@ bool NANO_DISPLAY::initDisplay() {
     display.display();
     delay(1);
   }
- 
   delay(1000);
+
+  // Show company
+  display.clearDisplay();
+  setMessage("Fuck U!", 1, 3);
+  display.display();
+  delay(500);
 
   return true;
 }
 
 void NANO_DISPLAY::setTempAndSpeed(float aTemp, int aFan, int aRPM)
 {
-  Serial.println(F("setTempAndSpeed()"));
+  DebugPrint(NULL);
+  DEBUG_PRINT(aTemp);
+  DEBUG_PRINT(aFan);
+  DEBUG_PRINTLN(aRPM);
+
+  // Clear and set title
+  clearDisplay();
+  setMessage("Temp   Fan", 0, 2);
+
+//*
+  char cBuff[8];
+  memset(cBuff, NULL, 8);
+  const int yoffset = 22;
 /*
-  char message[124];
-  char ctemp[32];
-  dtostrf(aTemp, 4, 1, ctemp);
-  sprintf(message, "setTempAndSpeed(): %s ,", ctemp);
-  Serial.print(message);
-
-  itoa(aFan, ctemp, 10);
-  sprintf(message, "%s ,", ctemp);
-  Serial.print(message);
-
-  itoa(aRPM, ctemp, 10);
-  sprintf(message, "%s", ctemp);
-  Serial.println(message);
+  // Temperature
+  display.setTextSize(3);
+  display.setCursor(0, yoffset);
+  // Integer if 100 >
+  if (aTemp >= 100.0F) {
+      itoa((int)aTemp, cBuff, 10);
+  }
+  // Float if 100 < with 1 decimal point
+  else {
+      dtostrf(aTemp, 3, 1, cBuff);
+  }
+  display.print(cBuff);
 */
 
+  // Write to display
+//  display.display();
+
 /*
-
-    // Clear and set title
-    clearDisplay();
-    setMessage("Temp   Fan", 0, 2);
-
-    char cBuff[8];
-    const int yoffset = 22;
-
-    // Temperature
-    display.setTextSize(3);
-    display.setCursor(0, yoffset);
-    // Integer if 100 >
-    if (aTemp >= 100.0F) {
-        itoa((int)aTemp, cBuff, 10);
-    }
-    // Float if 100 < with 1 decimal point
-    else {
-        dtostrf(aTemp, 3, 1, cBuff);
-    }
-    display.println(cBuff);
-
-    // Fan control percent
-    display.setTextSize(2);
-    display.setCursor(80, yoffset);
-    memset(cBuff, NULL, sizeof(cBuff));
-    char cFan[8];
+  // Fan control percent
+  display.setTextSize(2);
+  display.setCursor(80, yoffset);
+  memset(cBuff, NULL, sizeof(cBuff));
+  char cFan[16];
+//  sprintf(cFan, "SHIT");
+//*
+  if (aFan <= 0) {
+    sprintf(cFan, "0%%");
+  }
+  else {
     sprintf(cFan, "%3d%%", aFan);
-    display.println(cFan);
-
-    // Fan RPM reading
-    display.setCursor(30, 51);
-    sprintf(cFan, "%4d RPM", aRPM);
-    display.println(cFan);
-
-    // Write to display
-    display.display();
-*/
+  }
+//*/
+//  display.println(cFan);
+//  display.print("shiut");
+/*
+  // Fan RPM reading
+  display.setCursor(30, 51);
+  sprintf(cFan, "%4d RPM", aRPM);
+  display.println(cFan);
+//*/
+  // Write to display
+  display.display();
 }
 
 void NANO_DISPLAY::setConfigData(float aTemp, int aPercent)
@@ -300,7 +304,7 @@ void NANO_DISPLAY::setMessage(char *aMessage, int aLine, int aSize)
     break;
   }
 
-  display.println(aMessage);
+  display.print(aMessage);
 }
 
 void NANO_DISPLAY::refreshDisplay() {

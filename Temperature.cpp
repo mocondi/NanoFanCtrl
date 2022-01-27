@@ -19,23 +19,28 @@ const float B =					4941.4F;
 
 void M_TEMPERATURE::initTemperature()
 {
-    pinMode(TEMPERATURE_PIN, INPUT);
-    pinMode(TEMPERATURE_PIN, INPUT_PULLUP);
+  pinMode(TEMPERATURE_PIN, INPUT);
+  pinMode(TEMPERATURE_PIN, INPUT_PULLUP);
 }
 
 float M_TEMPERATURE::sampleTempPower()
 {
-    return TOOLS::ReadAnalogChannel(TEMPERATURE_PIN);
+  return TOOLS::ReadAnalogChannel(TEMP_CHANNEL);
 }
 
 float M_TEMPERATURE::sampleTemperature()
 {
-    // Translate to voltage
-	float volt = sampleTempPower();
-    // Translate voltage to temperature F
-    // Y = Mx+b, Y = -22.5 + 4575
-    // X = (Y-B)/M
-    float temp = (volt-B)/MX;
+//Serial.println(F("sampleTemperature()"));
 
-    return temp;
+  // Translate to voltage
+	float volt = sampleTempPower();
+
+//Serial.println(volt);
+  // Translate voltage to temperature F
+  // Y = Mx+b, Y = -22.5 + 4575
+  // X = (Y-B)/M
+  float temp = (volt-B)/MX;
+//Serial.println(temp);
+
+  return temp;
 }

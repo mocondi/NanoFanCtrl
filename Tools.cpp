@@ -44,6 +44,7 @@ void TOOLS::SampleAnalogs()
     ADInputs[i].avg /= MAX_ANALOG_SAMPLES;
   }
 
+/*
 char message[124];
 char ctemp[32];
 for (int i = 0; i < MAX_ANALOGS; i++) {
@@ -59,9 +60,8 @@ for (int i = 0; i < MAX_ANALOGS; i++) {
   itoa(ADInputs[i].avg, ctemp, 10);
   sprintf(message, ",Avg: %s", ctemp);
   Serial.println(message);
-
-  Serial.println();
 }
+*/
 }
 
 int TOOLS::ReadAnalogChannel(int aChannel) {

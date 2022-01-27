@@ -9,6 +9,7 @@
 #include "Fan.h"
 #include "Display.h"
 #include "Keypad.h"
+#include "Debug.h"
 
 
 volatile _PAIR tempTable[MAX_TABLE];
@@ -49,25 +50,27 @@ void M_CONTROL::UpdateControlDisplay()
 
 int M_CONTROL::ProcessFanControl(int &aKey)
 {
-/*
-  Serial.print(F("handleFanControl(): "));
-  Serial.println(aKey);
-*/
+  DEBUG_PRINTLN("ProcessFanControl()");
+  DEBUG_PRINTLN(aKey);
+  //DebugPrint(aKey);
+
   // Hendle keys
   if (aKey != KEY_NONE) return STATE_CONFIG;
 
   // Read temperature
   probeTemp = M_TEMPERATURE::sampleTemperature();
+  DEBUG_PRINTLN(probeTemp);
 
   // Set fan speed
   setSpeed = GetFanSpeedFromTemp(probeTemp);
+  DEBUG_PRINTLN(setSpeed);
 
   // Control fan speed
   M_FAN::controlFanSpeed(setSpeed);
 
-  // MJO getFanSpeed() kills kb task!  
   // Read fan speed
   fanSpeed = M_FAN::getFanSpeed();
+  DEBUG_PRINTLN(setSpeed);
 
   return STATE_CONTROL;
 }
