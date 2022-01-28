@@ -28,25 +28,22 @@ void KEY_PAD::initKeypad()
 
 int KEY_PAD::getKeypadVolts()
 {
-  return TOOLS::ReadAnalogChannel(KEYBOARD_PIN);
+  return TOOLS::ReadAnalogChannel(KEYBOARD_CHANNEL);
 }
 
 bool KEY_PAD::readKeypad(int *aKey)
 {
-  // We will be sampling all the analogs here used for this function and external functions
-//  TOOLS::SampleAnalogs();
-//  return false;
-
 //Serial.println(F("1"));
-//  int ivolt = TOOLS::GetMilliVoltsFromAnalog(KEYBOARD_PIN, KEY_SAMPLE_COUNT);
-  int ivolt = TOOLS::ReadAnalogChannel(KEYBOARD_PIN);
+  int ivolt = TOOLS::ReadAnalogChannel(KEYBOARD_CHANNEL);
 
 //Serial.println(F("2"));
   // Check idle and voltage source
   if (ivolt >= (DEFAULT_NONE-V_OFFSET) && ivolt <= (DEFAULT_NONE-V_OFFSET)) {
+//Serial.println(F("3"));
     return false;
   }
   if (ivolt < 10) {
+//Serial.println(F("4"));
     *aKey = KEY_LEFT;
     return true;
   }

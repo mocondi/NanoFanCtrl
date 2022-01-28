@@ -12,8 +12,8 @@ volatile ANALOG_CHANNEL ADInputs[MAX_ANALOGS];
 void TOOLS::InitAnalogData()
 {
   for (int i = 0; i < MAX_ANALOGS; i++) {
-    ADInputs[i].min = (int)BIT_TEN;
-    ADInputs[i].max = 0;
+//    ADInputs[i].min = (int)BIT_TEN;
+//    ADInputs[i].max = 0;
     ADInputs[i].avg = 0;
   }  
 }
@@ -29,6 +29,7 @@ void TOOLS::SampleAnalogs()
       int AD = analogRead(idx);
       // Capture avg
       ADInputs[idx].avg += AD;
+/*
       // Capture min
       if (AD < ADInputs[idx].min) {
         ADInputs[idx].min = AD;
@@ -37,6 +38,7 @@ void TOOLS::SampleAnalogs()
       if (AD > ADInputs[idx].max) {
         ADInputs[idx].max = AD;
       }
+*/
     }
   }
   // Calculate averages

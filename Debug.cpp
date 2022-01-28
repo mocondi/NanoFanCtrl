@@ -47,9 +47,9 @@ int M_DEBUG::ProcessDebug(int &aKey)
 void M_DEBUG::debugIO()
 {
   // Read all analogs and update voltages
-  int A0_Keypad = TOOLS::ReadAnalogChannel(A0);
-  int A1_Temp = TOOLS::ReadAnalogChannel(A1);
-  int A2_Tach = TOOLS::ReadAnalogChannel(A2);
+  int A0_Keypad = TOOLS::ReadAnalogChannel(KEYBOARD_CHANNEL);
+  int A1_Temp = TOOLS::ReadAnalogChannel(TEMP_CHANNEL);
+  int A2_Tach = TOOLS::ReadAnalogChannel(TACH_CHANNEL);
 
   NANO_DISPLAY::clearDisplay();
   NANO_DISPLAY::setMessage("DEBUG :-)", 0, 2);

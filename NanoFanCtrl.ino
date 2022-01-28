@@ -125,6 +125,16 @@ static int KeypadThread(struct pt *pt, int aInterval)
     PT_SEM_WAIT(pt, &full);
 //Serial.println("Key 2");
     TOOLS::SampleAnalogs();
+
+    if (KEY_PAD::readKeypad(&oldKeyPadKey)) {
+      if ((!keypadTrigger) && oldKeyPadKey != keypadKey) {
+        keypadKey = oldKeyPadKey;
+        keypadTrigger = true;
+        Serial.print("Key   : ");
+        Serial.println(keypadKey);
+      }
+    }
+
     PT_SEM_SIGNAL(pt, &empty);
 //Serial.println("Key 3");
 
@@ -226,10 +236,9 @@ static int PulseThread(struct pt *pt, int aInterval)
 // MAIN LOOP /////////////////////////////////////////////////////////////////
 void loop() {
 //  test();
-//*
+
   KeypadThread(&pt1, keypadInterval);
   DisplayThread(&pt2, displayInterval);
   ControlThread(&pt3, controlInterval);
-//*/
 }
 //////////////////////////////////////////////////////////////////////////////

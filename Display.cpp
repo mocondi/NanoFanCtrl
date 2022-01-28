@@ -137,7 +137,6 @@ static const unsigned char PROGMEM icon_Home[] = {
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-
 bool NANO_DISPLAY::initDisplay() {
   // Enable LCD power
   pinMode(DISPLAY_POWER_PIN, OUTPUT);
@@ -161,11 +160,11 @@ bool NANO_DISPLAY::initDisplay() {
     display.display();
     delay(1);
   }
-  delay(1000);
+  delay(500);
 
   // Show company
   display.clearDisplay();
-  setMessage("Fuck U!", 1, 3);
+  setMessage("Pho Que", 1, 3);
   display.display();
   delay(500);
 
@@ -181,13 +180,16 @@ void NANO_DISPLAY::setTempAndSpeed(float aTemp, int aFan, int aRPM)
 
   // Clear and set title
   clearDisplay();
+//display.setTextSize(2);
+//display.setCursor(0, 0);
+//display.println(F("Temp   Fan"));
   setMessage("Temp   Fan", 0, 2);
 
 //*
   char cBuff[8];
-  memset(cBuff, NULL, 8);
+//  memset(cBuff, NULL, 8);
   const int yoffset = 22;
-/*
+
   // Temperature
   display.setTextSize(3);
   display.setCursor(0, yoffset);
@@ -200,33 +202,28 @@ void NANO_DISPLAY::setTempAndSpeed(float aTemp, int aFan, int aRPM)
       dtostrf(aTemp, 3, 1, cBuff);
   }
   display.print(cBuff);
-*/
 
-  // Write to display
-//  display.display();
-
-/*
   // Fan control percent
   display.setTextSize(2);
   display.setCursor(80, yoffset);
-  memset(cBuff, NULL, sizeof(cBuff));
+//  memset(cBuff, NULL, sizeof(cBuff));
   char cFan[16];
-//  sprintf(cFan, "SHIT");
-//*
+
   if (aFan <= 0) {
     sprintf(cFan, "0%%");
   }
   else {
     sprintf(cFan, "%3d%%", aFan);
   }
-//*/
-//  display.println(cFan);
-//  display.print("shiut");
-/*
+  display.print(cFan);
+
   // Fan RPM reading
+  char cRPM[16];
+//  display.setTextSize(2);
+display.setTextSize(1);
   display.setCursor(30, 51);
-  sprintf(cFan, "%4d RPM", aRPM);
-  display.println(cFan);
+  sprintf(cRPM, "%4d RPM", aRPM);
+  display.print(cRPM);
 //*/
   // Write to display
   display.display();

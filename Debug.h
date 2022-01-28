@@ -1,6 +1,6 @@
 #pragma once
 
-#define SERIAL_DEBUG_ENABLED
+//#define SERIAL_DEBUG_ENABLED
 
 namespace M_DEBUG
 {
@@ -30,6 +30,8 @@ namespace M_DEBUG
         Serial.print(' ');      \
         Serial.println(__VA_ARGS__)
 #else
+#define DEBUG_PRINT(...)
+#define DEBUG_PRINTLN(...)
 #define DebugPrint(...)
 #define DebugPrintln(...)  
 #endif

@@ -24,8 +24,8 @@
 
 typedef struct
 {
-  int min;
-  int max;
+//  int min;
+//  int max;
   int avg;
 }ANALOG_CHANNEL;
 
