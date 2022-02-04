@@ -15,6 +15,7 @@
 #include "Keypad.h"
 #include "Tools.h"
 #include "Config.h"
+#include "NanoEeprom.h"
 #include "Debug.h"
 
 #define PT_USE_TIMER
@@ -82,6 +83,9 @@ void setup()
 
 void test()
 {
+    while (1) {
+        delay(2000);
+    }
 /*
 //  NANO_DISPLAY::test();
 //  M_CONTROL::toggleLED();
@@ -233,7 +237,7 @@ static int PulseThread(struct pt *pt, int aInterval)
 
 // MAIN LOOP /////////////////////////////////////////////////////////////////
 void loop() {
-//test();
+test();
 //delay(500);
 
   IOThread(&pt1, IOInterval);

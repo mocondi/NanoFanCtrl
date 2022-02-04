@@ -4,16 +4,17 @@
 *
 */
 #include <Arduino.h>
+#include <EEPROM.h>
 #include "Control.h"
 #include "Temperature.h"
 #include "Fan.h"
 #include "Display.h"
 #include "Keypad.h"
-#include "Eeprom.h"
+#include "NanoEeprom.h"
 #include "Debug.h"
 
 
-static volatile _PAIR tempTable[MAX_TABLE];
+static _PAIR tempTable[MAX_TABLE];
 static volatile float probeTemp = 0;
 static volatile int setSpeed = 0;
 static volatile int fanSpeed = 0;
@@ -25,24 +26,50 @@ static bool loopIttr = false;
 
 void M_CONTROL::initControl()
 {
-    tempTable[0].temp = 75.0F;
-    tempTable[0].percent = 30;
+  int serial = 0;
+  EEPROM.get(SERIAL_OFFSET, serial);
+  // Write defaults
+  if (serial != SERIAL_NUMBER) {
+Serial.println(F("1"));
+      // Set defaults
+      tempTable[0].temp = 75.0F;
+      tempTable[0].percent = 30;
+      tempTable[1].temp = 80.0F;
+      tempTable[1].percent = 35;
+      tempTable[2].temp = 85.0F;
+      tempTable[2].percent = 50;
+      tempTable[3].temp = 90.0F;
+      tempTable[3].percent = 75;
+      tempTable[4].temp = 95.0F;
+      tempTable[4].percent = 80;
+      tempTable[5].temp = 100.0F;
+      tempTable[5].percent = 90;
 
-    tempTable[1].temp = 80.0F;
-    tempTable[1].percent = 35;
-
-    tempTable[2].temp = 85.0F;
-    tempTable[2].percent = 50;
-
-    tempTable[3].temp = 90.0F;
-    tempTable[3].percent = 75;
-
-    tempTable[4].temp = 95.0F;
-    tempTable[4].percent = 80;
-
-    tempTable[5].temp = 100.0F;
-    tempTable[5].percent = 90;
+      // Store defaults into EEPROM
+      int eOffset = 0;
+      for (int i = 0; i < MAX_TABLE; i++) {
+          EEPROM.put(eOffset, tempTable[i]);
+          eOffset += sizeof(_PAIR);
+      }
+      EEPROM.put(SERIAL_OFFSET, SERIAL_NUMBER);
   }
+  // Read settings
+  else {
+Serial.println(F("2"));
+      int eOffset = 0;
+      for (int i = 0; i < MAX_TABLE; i++) {
+          EEPROM.get(eOffset, tempTable[i]);
+
+          eOffset += sizeof(_PAIR);
+          Serial.print("Table: ");
+          Serial.println(i);
+          Serial.print("Temp: ");
+          Serial.println(tempTable[i].temp);
+          Serial.print("Pcnt: ");
+          Serial.println(tempTable[i].percent);
+      }
+  }
+}
 
 void M_CONTROL::UpdateControlDisplay()
 {
