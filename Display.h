@@ -1,14 +1,18 @@
 #pragma once
 
-#define OFFSET_ZERO   0
-#define OFFSET_ONE    20
-#define OFFSET_TWO    30
-#define OFFSET_THREE  40
-#define OFFSET_FOUR   50
-#define OFFSET_FIVE   60
+#define OFFSET_ZERO       0
+#define OFFSET_ONE       20
+#define OFFSET_TWO       30
+#define OFFSET_THREE     40
+#define OFFSET_FOUR      50
+#define OFFSET_FIVE      60
 
-#define MAX_TABLE     6
+#define MAX_TABLE         6
 
+#define SCREEN_WIDTH    128 // OLED display width, in pixels
+#define SCREEN_HEIGHT    64 // OLED display height, in pixels
+#define OLED_RESET       -1
+#define SCREEN_ADDRESS 0x3C
 
 namespace NANO_DISPLAY
 {
@@ -16,7 +20,7 @@ namespace NANO_DISPLAY
   void setTempAndSpeed(float aTemp, int aFan, int aRPM);
   void setConfigData(float aTemp, int aPercent);
   void setDebugData(int AD[8]);
-  void setMessage(char *aMessage, int aLine = 1, int aSize = 1);
+  void setMessage(const char *aMessage, int aLine = 1, int aSize = 1);
   void refreshDisplay();
   void clearDisplay();
   void showArrowIcons();

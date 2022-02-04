@@ -9,7 +9,7 @@
 #include "Display.h"
 #include "Tools.h"
 
-int keyValues[KEY_NONE];
+static int keyValues[KEY_NONE];
 
 #define KEY_SAMPLE_COUNT  20
 

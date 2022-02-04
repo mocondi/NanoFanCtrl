@@ -12,14 +12,14 @@
 #include "Debug.h"
 
 
-volatile _PAIR tempTable[MAX_TABLE];
-volatile static float probeTemp = 0;
-volatile static int setSpeed = 0;
-volatile static int fanSpeed = 0;
+static volatile _PAIR tempTable[MAX_TABLE];
+static volatile float probeTemp = 0;
+static volatile int setSpeed = 0;
+static volatile int fanSpeed = 0;
 
 //const int minFanSpeed = 25; // Min speed in percentage
-const int maxFanSpeed = 100; // Max speed in percentage
-bool loopIttr = false;
+static const int maxFanSpeed = 100; // Max speed in percentage
+static bool loopIttr = false;
 
 
 void M_CONTROL::initControl()
@@ -48,28 +48,29 @@ void M_CONTROL::UpdateControlDisplay()
   NANO_DISPLAY::setTempAndSpeed(probeTemp, setSpeed, fanSpeed);
 }
 
-int M_CONTROL::ProcessFanControl(int &aKey)
+int M_CONTROL::ProcessFanControl(int aKey)
 {
   DEBUG_PRINTLN("ProcessFanControl()");
   DEBUG_PRINTLN(aKey);
 
   // Hendle keys
-  if (aKey != KEY_NONE) return STATE_CONFIG;
+//  if (aKey != KEY_NONE) return STATE_CONFIG;
 
   // Read temperature
   probeTemp = M_TEMPERATURE::sampleTemperature();
-  DEBUG_PRINTLN(probeTemp);
+//  probeTemp = 123;
+//  DEBUG_PRINTLN(probeTemp);
 
   // Set fan speed
   setSpeed = GetFanSpeedFromTemp(probeTemp);
-  DEBUG_PRINTLN(setSpeed);
+//  DEBUG_PRINTLN(setSpeed);
 
   // Control fan speed
   M_FAN::controlFanSpeed(setSpeed);
 
   // Read fan speed
   fanSpeed = M_FAN::getFanSpeed();
-  DEBUG_PRINTLN(setSpeed);
+//  DEBUG_PRINTLN(fanSpeed);
 
   return STATE_CONTROL;
 }
