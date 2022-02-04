@@ -54,7 +54,7 @@ int M_CONTROL::ProcessFanControl(int aKey)
 //  DEBUG_PRINTLN(aKey);
 
   // Hendle keys
-//  if (aKey != KEY_NONE) return STATE_CONFIG;
+  if (aKey != KEY_NONE) return STATE_CONFIG;
 
   // Read temperature
   probeTemp = M_TEMPERATURE::sampleTemperature();

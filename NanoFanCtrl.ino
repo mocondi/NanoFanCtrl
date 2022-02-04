@@ -195,7 +195,7 @@ static int ControlThread(struct pt *pt, int aInterval)
       controlState = M_CONTROL::ProcessFanControl(keypadKey);
       break;
     case STATE_CONFIG:
-//      controlState = M_CONFIG::ProcessConfig(keypadKey);
+      controlState = M_CONFIG::ProcessConfig(keypadKey);
       break;
     case STATE_DEBUG:
     default:
