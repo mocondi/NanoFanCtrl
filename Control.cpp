@@ -58,7 +58,6 @@ int M_CONTROL::ProcessFanControl(int aKey)
 
   // Read temperature
   probeTemp = M_TEMPERATURE::sampleTemperature();
-//  probeTemp = 123;
 //  DEBUG_PRINTLN(probeTemp);
 
   // Set fan speed

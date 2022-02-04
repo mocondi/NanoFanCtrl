@@ -82,6 +82,7 @@ void setup()
 
 void test()
 {
+/*
 //  NANO_DISPLAY::test();
 //  M_CONTROL::toggleLED();
   char message[32];
@@ -103,9 +104,9 @@ void test()
   }
 
   delay(2000);
+*/
 }
 
-//*
 // IO Thread, Analogs in and display out sequentially
 static int IOThread(struct pt *pt, int aInterval)
 {
@@ -114,11 +115,7 @@ static int IOThread(struct pt *pt, int aInterval)
   static unsigned long timestamp = 0;
   while (1)
   {
-//Serial.println("a");
-//    PT_SEM_WAIT(pt, &full);
-//Serial.println("b");
     TOOLS::SampleAnalogs();
-//Serial.println("c");
 
     if (KEY_PAD::readKeypad(&oldKeyPadKey)) {
       if ((!keypadTrigger) && oldKeyPadKey != keypadKey) {
@@ -143,19 +140,14 @@ static int IOThread(struct pt *pt, int aInterval)
       break;
     }
 */
-//Serial.println("1");
-//    PT_SEM_SIGNAL(pt, &empty);
-//Serial.println("2");
     PT_SEM_SIGNAL(pt, &sAnalogReady);
 
     PT_WAIT_UNTIL(pt, millis() - timestamp > aInterval);
     timestamp = millis();
-//Serial.println("3");
-
   }
   PT_END(pt);
 }
-//*/
+
 // OLED Display thread
 static int DisplayThread(struct pt *pt, int aInterval)
 {
@@ -183,28 +175,24 @@ static int DisplayThread(struct pt *pt, int aInterval)
   }
   PT_END(pt);
 }
-//*
+
 // Contorl thread
 static int ControlThread(struct pt *pt, int aInterval)
 {
   PT_BEGIN(pt);
   Serial.println(F("Started ControlThread()"));
   static unsigned long timestamp = 0;
-  //int oldInterval = aInterval;
+
   while (1) 
   {
     PT_SEM_WAIT(pt, &sAnalogReady);
-//*
+
     // Process the current state
     switch (controlState)
     {
     case STATE_IDLE:
     case STATE_CONTROL:
-//      aInterval = oldInterval;
-//Serial.println("Ctrl 1");
-//Serial.println("Ctrl 2");
       controlState = M_CONTROL::ProcessFanControl(keypadKey);
-//Serial.println("Ctrl 3");
       break;
     case STATE_CONFIG:
 //      controlState = M_CONFIG::ProcessConfig(keypadKey);
@@ -221,8 +209,6 @@ static int ControlThread(struct pt *pt, int aInterval)
       keypadKey = KEY_NONE;
       keypadTrigger = false;
     }
-//*/
-//    PT_SEM_SIGNAL(pt, &full);
 
     PT_WAIT_UNTIL(pt, millis() - timestamp > aInterval);
     timestamp = millis();
@@ -244,15 +230,14 @@ static int PulseThread(struct pt *pt, int aInterval)
   }
   PT_END(pt);
 }
-//*/
 
 // MAIN LOOP /////////////////////////////////////////////////////////////////
 void loop() {
-//  test();
+//test();
+//delay(500);
 
   IOThread(&pt1, IOInterval);
   DisplayThread(&pt2, displayInterval);
   ControlThread(&pt3, controlInterval);
-//delay(500);
 }
 //////////////////////////////////////////////////////////////////////////////

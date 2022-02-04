@@ -14,7 +14,7 @@
 #include "Display.h"
 #include "Tools.h"
 #include "Debug.h"
-/*
+//*
 static const unsigned char PROGMEM icon_LeftArrow[] = {
   0x01, 0x80,
   0x03, 0x80,
@@ -128,7 +128,7 @@ static const unsigned char PROGMEM icon_Home[] = {
   0x00, 0x00,
   0x00, 0x00
 };
-*/
+//*/
 
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
@@ -178,28 +178,12 @@ void NANO_DISPLAY::setTempAndSpeed(float aTemp, int aFan, int aRPM)
   DEBUG_PRINTLN(aFan);
   DEBUG_PRINTLN(aRPM);
 */
+  char cBuff[16];
 
   // Clear and set title
   clearDisplay();
-/*
-  display.setTextSize(2);
-  display.setCursor(0, 0);
-  display.print(F("TEST"));
-  display.setTextSize(1);
-  display.setCursor(0, 10);
-  display.print(F("JUNASDF asdf"));
-  display.setCursor(0, 20);
-  display.print(F("asdf asd f"));
-  display.setTextSize(3);
-  display.setCursor(0, 30);
-  display.print(F("123"));
-  display.display();
-*/
-  // 
-//  setMessage("Temp   Fan", 0, 2);
   setMessage("Temp   Fan", 0, DISP_TOP_SIZE);
-//*
-  char cBuff[16];
+
 
   // Temperature
   display.setTextSize(DISP_TEMP_SIZE);
@@ -218,7 +202,6 @@ void NANO_DISPLAY::setTempAndSpeed(float aTemp, int aFan, int aRPM)
   display.setTextSize(DISP_FAN_SIZE);
   display.setCursor(80, Y_OFFSET);
   memset(cBuff, NULL, sizeof(cBuff));
-//  char cFan[16];
   if (aFan <= 0) {
     sprintf(cBuff, "0%%");
   }
@@ -226,20 +209,16 @@ void NANO_DISPLAY::setTempAndSpeed(float aTemp, int aFan, int aRPM)
     sprintf(cBuff, "%3d%%", aFan);
   }
   display.println(cBuff);
-//  display.display();
-//*/
-//*
+
   // Fan RPM reading
-//  char cRPM[16];
   memset(cBuff, NULL, sizeof(cBuff));
   display.setTextSize(DISP_RPM_SIZE);
-//  display.setCursor(30, 51);
   display.setCursor(25, Y_OFFSET +28);
 //  sprintf(cBuff, "%4d RPM", aRPM);
  sprintf(cBuff, "%d RPM", aRPM);
 //  display.println("1234 RPM");
   display.println(cBuff);
-//*/
+
   // Write to display
   display.display();
 }
@@ -267,7 +246,7 @@ void NANO_DISPLAY::setDebugData(int AD[8])
   display.setTextSize(2);
   const int Y_SPACE = 16;
   int offset = 20;
-//*
+
   char cMsg[128];
   for (int i = 0; i < 3; i++) {
     sprintf(cMsg, "AD %d: %d", i, AD[i]);

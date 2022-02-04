@@ -14,8 +14,8 @@
 //const float B =				 4575.0F;
 //const float MX =				  -32.5F;
 //const float B =				 5175.0F;
-static const float MX =				-28.12F;
-static const float B =					4941.4F;
+static const float MX =     -28.12F;
+static const float B =      4941.4F;
 
 void M_TEMPERATURE::initTemperature()
 {
