@@ -27,7 +27,7 @@ int oldKeyPadKey = KEY_NONE;
 volatile bool keypadTrigger = false;
 //volatile int controlState = STATE_DEBUG;// STATE_CONFIG;// STATE_IDLE;
 volatile int controlState = STATE_IDLE;
-static struct pt pt1, pt2, pt3, pt4; // each protothread needs one of these
+static struct pt pt1, pt2, pt3;// , pt4; // each protothread needs one of these
 static const int IOInterval = 100;
 
 static const int displayInterval = 1000;
@@ -162,7 +162,7 @@ static int DisplayThread(struct pt *pt, int aInterval)
   PT_BEGIN(pt);
   Serial.println(F("Started DisplayThread()"));
   static unsigned long timestamp = 0;
-//  while (1)
+  while (1)
   {
     switch (controlState) {
     case STATE_IDLE:

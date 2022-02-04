@@ -50,8 +50,8 @@ void M_CONTROL::UpdateControlDisplay()
 
 int M_CONTROL::ProcessFanControl(int aKey)
 {
-  DEBUG_PRINTLN("ProcessFanControl()");
-  DEBUG_PRINTLN(aKey);
+//  DEBUG_PRINTLN("ProcessFanControl()");
+//  DEBUG_PRINTLN(aKey);
 
   // Hendle keys
 //  if (aKey != KEY_NONE) return STATE_CONFIG;
