@@ -9,6 +9,7 @@
 #include "Fan.h"
 #include "Display.h"
 #include "Keypad.h"
+#include "Eeprom.h"
 #include "Debug.h"
 
 
