@@ -2,7 +2,7 @@
 
 #define NANO_EEPROM_SIZE    1024
 #define SERIAL_OFFSET       1020// 4 bytes at the end
-#define SERIAL_NUMBER       56963
+#define SERIAL_NUMBER       5696
 
 namespace M_CONTROL
 {
