@@ -159,6 +159,8 @@ static int DisplayThread(struct pt *pt, int aInterval)
   static unsigned long timestamp = 0;
   while (1)
   {
+    M_CONTROL::UpdateControlDisplay();
+/*    
     switch (controlState) {
     case STATE_IDLE:
     case STATE_CONTROL:
@@ -172,6 +174,7 @@ static int DisplayThread(struct pt *pt, int aInterval)
     default:
       break;
     }
+*/    
 
     PT_WAIT_UNTIL(pt, millis() - timestamp > aInterval);
     timestamp = millis();

@@ -19,7 +19,7 @@ static volatile int setSpeed = 0;
 static volatile int fanSpeed = 0;
 
 //const int minFanSpeed = 25; // Min speed in percentage
-static const int maxFanSpeed = 100; // Max speed in percentage
+static const int maxFanSpeed = 98; // Max speed in percentage
 static bool loopIttr = false;
 
 
@@ -30,17 +30,17 @@ void M_CONTROL::initControl()
   // Write defaults
   if (serial != SERIAL_NUMBER) {
     // Set defaults
-    tempTable[0].temp = 75.0F;
+    tempTable[0].temp = 74.5F;
     tempTable[0].percent = 30;
-    tempTable[1].temp = 80.0F;
+    tempTable[1].temp = 76.0F;
     tempTable[1].percent = 35;
-    tempTable[2].temp = 85.0F;
+    tempTable[2].temp = 77.0F;
     tempTable[2].percent = 50;
-    tempTable[3].temp = 90.0F;
+    tempTable[3].temp = 78.0F;
     tempTable[3].percent = 75;
-    tempTable[4].temp = 95.0F;
+    tempTable[4].temp = 79.0F;
     tempTable[4].percent = 80;
-    tempTable[5].temp = 100.0F;
+    tempTable[5].temp = 80.0F;
     tempTable[5].percent = 90;
 
     // Store defaults into EEPROM
