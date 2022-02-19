@@ -222,12 +222,16 @@ void NANO_DISPLAY::setTempAndSpeed(float aTemp, int aFan, int aRPM)
   memset(cBuff, NULL, sizeof(cBuff));
   char tb[6];
   itoa(aRPM, tb, 10);
-  sprintf(cBuff, "%s RPM", tb);
-  display.setTextSize(1);
-//  display.setCursor(30, 46);
-  display.setCursor(70, 46);
-
+//  sprintf(cBuff, "%s RPM", tb);
+  sprintf(cBuff, "%s", tb);
+  display.setTextSize(2);
+//  display.setCursor(70, 46);
+  display.setCursor(40, 48);
   display.println(cBuff);
+
+  display.setTextSize(1);
+  display.setCursor(100, 50);
+  display.println("RPM");
 //display.println("1234 RPM");
 
   // Write to display
