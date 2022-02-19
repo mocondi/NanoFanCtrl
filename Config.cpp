@@ -9,10 +9,9 @@
 #include "Display.h"
 #include "Keypad.h"
 
-extern volatile _PAIR tempTable[MAX_TABLE];
 
-int configMenuItem = MENU_SEL_TEMP_SEL;
-volatile int configTableIndex = 0;
+static int configMenuItem = MENU_SEL_TEMP_SEL;
+static volatile int configTableIndex = 0;
 
 void M_CONFIG::UpdateConfigDisplay()
 {

@@ -14,12 +14,7 @@
 #include "Display.h"
 #include "Tools.h"
 #include "Debug.h"
-
-#define SCREEN_WIDTH    128 // OLED display width, in pixels
-#define SCREEN_HEIGHT    64 // OLED display height, in pixels
-#define OLED_RESET       -1
-#define SCREEN_ADDRESS 0x3C
-
+//*
 static const unsigned char PROGMEM icon_LeftArrow[] = {
   0x01, 0x80,
   0x03, 0x80,
@@ -133,11 +128,15 @@ static const unsigned char PROGMEM icon_Home[] = {
   0x00, 0x00,
   0x00, 0x00
 };
+//*/
 
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire);
+//Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET, 200000, 100000);
+
 
 bool NANO_DISPLAY::initDisplay() {
+
   // Enable LCD power
   pinMode(DISPLAY_POWER_PIN, OUTPUT);
   digitalWrite(DISPLAY_POWER_PIN, LOW);
@@ -173,26 +172,21 @@ bool NANO_DISPLAY::initDisplay() {
 
 void NANO_DISPLAY::setTempAndSpeed(float aTemp, int aFan, int aRPM)
 {
-  DebugPrint(NULL);
-  DEBUG_PRINT(aTemp);
-  DEBUG_PRINT(aFan);
+/*
+  DebugPrintln(NULL);
+  DEBUG_PRINTLN(aTemp);
+  DEBUG_PRINTLN(aFan);
   DEBUG_PRINTLN(aRPM);
+*/
+  char cBuff[16];
 
   // Clear and set title
   clearDisplay();
-//display.setTextSize(2);
-//display.setCursor(0, 0);
-//display.println(F("Temp   Fan"));
-  setMessage("Temp   Fan", 0, 2);
-
-//*
-  char cBuff[8];
-//  memset(cBuff, NULL, 8);
-  const int yoffset = 22;
+  setMessage("Temp   Fan", 0, DISP_TOP_SIZE);
 
   // Temperature
-  display.setTextSize(3);
-  display.setCursor(0, yoffset);
+  display.setTextSize(DISP_TEMP_SIZE);
+  display.setCursor(0, Y_OFFSET);
   // Integer if 100 >
   if (aTemp >= 100.0F) {
       itoa((int)aTemp, cBuff, 10);
@@ -201,30 +195,41 @@ void NANO_DISPLAY::setTempAndSpeed(float aTemp, int aFan, int aRPM)
   else {
       dtostrf(aTemp, 3, 1, cBuff);
   }
-  display.print(cBuff);
+  display.println(cBuff);
 
   // Fan control percent
-  display.setTextSize(2);
-  display.setCursor(80, yoffset);
-//  memset(cBuff, NULL, sizeof(cBuff));
-  char cFan[16];
-
+  display.setTextSize(DISP_FAN_SIZE);
+  display.setCursor(80, Y_OFFSET);
+  memset(cBuff, NULL, sizeof(cBuff));
   if (aFan <= 0) {
-    sprintf(cFan, "0%%");
+    sprintf(cBuff, "0%%");
   }
   else {
-    sprintf(cFan, "%3d%%", aFan);
+    sprintf(cBuff, "%3d%%", aFan);
   }
-  display.print(cFan);
-
+  display.println(cBuff);
+/*
   // Fan RPM reading
-  char cRPM[16];
-//  display.setTextSize(2);
-display.setTextSize(1);
-  display.setCursor(30, 51);
-  sprintf(cRPM, "%4d RPM", aRPM);
-  display.print(cRPM);
-//*/
+  memset(cBuff, NULL, sizeof(cBuff));
+  display.setTextSize(DISP_RPM_SIZE);
+  display.setCursor(25, Y_OFFSET +28);
+//  sprintf(cBuff, "%4d RPM", aRPM);
+ sprintf(cBuff, "%d RPM", aRPM);
+//  display.println("1234 RPM");
+  display.println(cBuff);
+*/
+//  display.display();
+  memset(cBuff, NULL, sizeof(cBuff));
+  char tb[6];
+  itoa(aRPM, tb, 10);
+  sprintf(cBuff, "%s RPM", tb);
+  display.setTextSize(1);
+//  display.setCursor(30, 46);
+  display.setCursor(70, 46);
+
+  display.println(cBuff);
+//display.println("1234 RPM");
+
   // Write to display
   display.display();
 }
@@ -245,14 +250,14 @@ void NANO_DISPLAY::setConfigData(float aTemp, int aPercent)
 void NANO_DISPLAY::setDebugData(int AD[8])
 {
   display.clearDisplay();
-  display.drawBitmap(0, 0, icon_Smile, 16, 16, 1);
-  display.drawBitmap(96, 0, icon_Home, 16, 16, 1);
+//  display.drawBitmap(0, 0, icon_Smile, 16, 16, 1);
+//  display.drawBitmap(96, 0, icon_Home, 16, 16, 1);
 
 
   display.setTextSize(2);
   const int Y_SPACE = 16;
   int offset = 20;
-//*
+
   char cMsg[128];
   for (int i = 0; i < 3; i++) {
     sprintf(cMsg, "AD %d: %d", i, AD[i]);
@@ -275,7 +280,7 @@ void NANO_DISPLAY::setDebugData(int AD[8])
 
 }
 
-void NANO_DISPLAY::setMessage(char *aMessage, int aLine, int aSize)
+void NANO_DISPLAY::setMessage(const char *aMessage, int aLine, int aSize)
 {
   // Small size below yellow line
   display.setTextSize(aSize);
@@ -301,7 +306,7 @@ void NANO_DISPLAY::setMessage(char *aMessage, int aLine, int aSize)
     break;
   }
 
-  display.print(aMessage);
+  display.println(aMessage);
 }
 
 void NANO_DISPLAY::refreshDisplay() {
@@ -315,12 +320,12 @@ void NANO_DISPLAY::clearDisplay() {
 void NANO_DISPLAY::showArrowIcons()
 {
   display.clearDisplay();
-
+/*
   display.drawBitmap(0, 0, icon_LeftArrow, 16, 16, 1);
   display.drawBitmap(32, 0, icon_UpArrow, 16, 16, 1);
   display.drawBitmap(64, 0, icon_DownArrow, 16, 16, 1);
   display.drawBitmap(96, 0, icon_RightArrow, 16, 16, 1);
-
+*/
   display.display();
 /*
   display.startscrollright(0x00, 0x0F);

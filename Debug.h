@@ -1,6 +1,6 @@
 #pragma once
 
-//#define SERIAL_DEBUG_ENABLED
+#define SERIAL_DEBUG_ENABLED
 
 namespace M_DEBUG
 {
