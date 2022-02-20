@@ -38,12 +38,12 @@ namespace NANO_DISPLAY
   void showArrowIcons();
   void test();
 }
-
+/*
 typedef struct _PAIR {
   float temp;
   int percent;
 } PAIR;
-
+*/
 
 /*  
   // Scroll in various directions, pausing in-between:

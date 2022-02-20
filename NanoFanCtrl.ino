@@ -3,6 +3,9 @@
 * Main Arduino file
 *
 * By: Mark Ocondi
+*
+* TODO: linear | log fan pcnt to temp calc.
+*       Config settings complete
 */
 
 #include "Display.h"

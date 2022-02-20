@@ -13,7 +13,6 @@
 #include "Debug.h"
 
 
-static _PAIR tempTable[MAX_TABLE];
 static volatile float probeTemp = 0;
 static volatile int setSpeed = 0;
 static volatile int fanSpeed = 0;
@@ -21,6 +20,15 @@ static volatile int fanSpeed = 0;
 //const int minFanSpeed = 25; // Min speed in percentage
 static const int maxFanSpeed = 98; // Max speed in percentage
 static bool loopIttr = false;
+
+typedef struct {
+  float MinTemp;
+  float MaxTemp;
+  int MinFanPcnt;
+  int MaxFanPcnt;
+} TEMP_CONTROL;
+
+TEMP_CONTROL tempCtrlStr;
 
 
 void M_CONTROL::initControl()
@@ -30,6 +38,9 @@ void M_CONTROL::initControl()
   // Write defaults
   if (serial != SERIAL_NUMBER) {
     // Set defaults
+    tempCtrlStr.MinTemp = 74.5;
+
+/*
     tempTable[0].temp = 74.5F;
     tempTable[0].percent = 30;
     tempTable[1].temp = 76.0F;
@@ -42,30 +53,33 @@ void M_CONTROL::initControl()
     tempTable[4].percent = 80;
     tempTable[5].temp = 80.0F;
     tempTable[5].percent = 90;
-
+*/
     // Store defaults into EEPROM
+/*
     int eOffset = 0;
     for (int i = 0; i < MAX_TABLE; i++) {
         EEPROM.put(eOffset, tempTable[i]);
         eOffset += sizeof(_PAIR);
     }
+*/
+    EEPROM.put(0, tempCtrlStr);
     EEPROM.put(SERIAL_OFFSET, SERIAL_NUMBER);
   }
   // Read settings
   else {
+/*
     int eOffset = 0;
     for (int i = 0; i < MAX_TABLE; i++) {
       EEPROM.get(eOffset, tempTable[i]);
       eOffset += sizeof(_PAIR);
-/*
     Serial.print("Table: ");
     Serial.println(i);
     Serial.print("Temp: ");
     Serial.println(tempTable[i].temp);
     Serial.print("Pcnt: ");
     Serial.println(tempTable[i].percent);
-*/
     }
+*/
   }
 }
 

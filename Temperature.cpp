@@ -8,12 +8,6 @@
 #include "Tools.h"
 
 #define TEMP_SAMPLE_COUNT     10
-//const float MX =				  -26.0F;
-//const float B =				 4820.0F;
-//const float MX =				  -22.5F;
-//const float B =				 4575.0F;
-//const float MX =				  -32.5F;
-//const float B =				 5175.0F;
 static const float MX =     -28.12F;
 static const float B =      4941.4F;
 
