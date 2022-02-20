@@ -10,6 +10,8 @@ namespace M_CONTROL
   void UpdateControlDisplay();
   int ProcessFanControl(int aKey);
   int GetFanSpeedFromTemp(float temperature);
+  float getSlope(float X[2], int Y[2]);
+  int getYIntercept(float X, int Y, float M);
 
   void toggleLED();
   void heartBeatLED();

@@ -16,9 +16,8 @@
 static volatile float probeTemp = 0;
 static volatile int setSpeed = 0;
 static volatile int fanSpeed = 0;
-
-//const int minFanSpeed = 25; // Min speed in percentage
-static const int maxFanSpeed = 98; // Max speed in percentage
+float gM;
+int gB;
 static bool loopIttr = false;
 
 typedef struct {
@@ -39,48 +38,27 @@ void M_CONTROL::initControl()
   if (serial != SERIAL_NUMBER) {
     // Set defaults
     tempCtrlStr.MinTemp = 74.5;
+    tempCtrlStr.MinFanPcnt = 30;
+    tempCtrlStr.MaxTemp = 85.0;
+    tempCtrlStr.MaxFanPcnt = 98;
 
-/*
-    tempTable[0].temp = 74.5F;
-    tempTable[0].percent = 30;
-    tempTable[1].temp = 76.0F;
-    tempTable[1].percent = 35;
-    tempTable[2].temp = 77.0F;
-    tempTable[2].percent = 50;
-    tempTable[3].temp = 78.0F;
-    tempTable[3].percent = 75;
-    tempTable[4].temp = 79.0F;
-    tempTable[4].percent = 80;
-    tempTable[5].temp = 80.0F;
-    tempTable[5].percent = 90;
-*/
     // Store defaults into EEPROM
-/*
-    int eOffset = 0;
-    for (int i = 0; i < MAX_TABLE; i++) {
-        EEPROM.put(eOffset, tempTable[i]);
-        eOffset += sizeof(_PAIR);
-    }
-*/
     EEPROM.put(0, tempCtrlStr);
     EEPROM.put(SERIAL_OFFSET, SERIAL_NUMBER);
   }
   // Read settings
   else {
-/*
-    int eOffset = 0;
-    for (int i = 0; i < MAX_TABLE; i++) {
-      EEPROM.get(eOffset, tempTable[i]);
-      eOffset += sizeof(_PAIR);
-    Serial.print("Table: ");
-    Serial.println(i);
-    Serial.print("Temp: ");
-    Serial.println(tempTable[i].temp);
-    Serial.print("Pcnt: ");
-    Serial.println(tempTable[i].percent);
-    }
-*/
+    EEPROM.get(0, tempCtrlStr);
   }
+  // Calculate slope values
+  float tmpX[2];
+  int tmpY[2];
+  tmpX[0] = tempCtrlStr.MinTemp;
+  tmpX[1] = tempCtrlStr.MaxTemp;
+  tmpY[0] = tempCtrlStr.MinFanPcnt;
+  tmpY[1] = tempCtrlStr.MaxFanPcnt;
+  gM = getSlope(tmpX, tmpY);
+  gB = getYIntercept(tmpX[0], tmpY[0], gM);
 }
 
 void M_CONTROL::UpdateControlDisplay()
@@ -120,28 +98,37 @@ int M_CONTROL::GetFanSpeedFromTemp(float temperature)
 //  Serial.println(temperature);
 
   // 1st if below lowest disable fan
-  if (temperature < tempTable[0].temp) {
+  if (temperature < tempCtrlStr.MinTemp) {
 //Serial.println("return below level");
     return 0;
   }
   // 2nd if above max
-  if (temperature >= tempTable[MAX_TABLE - 1].temp) {
+  if (temperature >= tempCtrlStr.MaxTemp) {
 //Serial.println("return above max");
-    return maxFanSpeed;
+    return tempCtrlStr.MinFanPcnt;
   }
 
-  // Control from table
-  for( int i =0; i < MAX_TABLE; i++) {
-    if ((temperature >= tempTable[i].temp) && 
-        (temperature <= tempTable[i+1].temp)) {
-//Serial.print("From table index: ");
-//Serial.println(i);
-      return tempTable[i].percent;
-    }
-  }
-//Serial.println("Finished loop");
-  return 0;
+  // Control on slope equation
+  float rc = (gM * temperature) + gB;
+  if (rc < tempCtrlStr.MinFanPcnt)
+    return tempCtrlStr.MinFanPcnt;
+  else if (rc > tempCtrlStr.MaxFanPcnt)
+    return tempCtrlStr.MaxFanPcnt;
+  else 
+    return rc;
 }
+
+float M_CONTROL::getSlope(float X[2], int Y[2])
+{
+  return ((Y[1] - Y[0]) / (X[1] - X[0]));
+}
+
+int M_CONTROL::getYIntercept(float X, int Y, float M)
+{
+  float b = ((M * X) * -1) + Y;
+  return (int)b;
+}
+
 
 void M_CONTROL::toggleLED() {
   boolean ledstate = digitalRead(LED_BUILTIN); // get LED state
