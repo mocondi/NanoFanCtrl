@@ -178,7 +178,7 @@ void NANO_DISPLAY::setTempAndSpeed(float aTemp, int aFan, int aRPM)
   DEBUG_PRINTLN(aFan);
   DEBUG_PRINTLN(aRPM);
 */
-  char cBuff[16];
+  char cBuff[32];
 
   // Clear and set title
   clearDisplay();
@@ -220,8 +220,19 @@ void NANO_DISPLAY::setTempAndSpeed(float aTemp, int aFan, int aRPM)
 */
 //  display.display();
   memset(cBuff, NULL, sizeof(cBuff));
-  char tb[6];
-  itoa(aRPM, tb, 10);
+  char tb[16];
+  memset(tb, NULL, sizeof(tb));
+  if (aRPM > 0) {
+    itoa(aRPM, tb, 10);
+  } 
+  else if (aRPM < 0) {
+    tb[0] = '0';
+  }
+  else if (aRPM > 9999) {
+    tb[0] = 'M';
+    tb[1] = 'a';
+    tb[2] = 'x';
+  }
 //  sprintf(cBuff, "%s RPM", tb);
   sprintf(cBuff, "%s", tb);
   display.setTextSize(2);
