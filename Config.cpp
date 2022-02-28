@@ -19,19 +19,19 @@ void M_CONFIG::UpdateConfigDisplay()
   switch (configMenuItem)
   {
   case MENU_SEL_TEMP_SEL:
-    NANO_DISPLAY::setMessage("Config Tmp", 0, 2);
-    NANO_DISPLAY::setMessage("Enter to adjust", 1, 1);
+    NANO_DISPLAY::setMessage("Config Tmp", LINE_TOP, 2);
+    NANO_DISPLAY::setMessage("Enter to adjust", LINE_MID_TOP, 1);
     break;
   case MENU_SEL_TEMP_ADJ:
-    NANO_DISPLAY::setMessage("Adjust Tmp", 0, 2);
+    NANO_DISPLAY::setMessage("Adjust Tmp", LINE_TOP, 2);
 //    NANO_DISPLAY::setConfigData(tempTable[configTableIndex].temp, tempTable[configTableIndex].percent);
     break;
   case MENU_SEL_KEYPAD_SEL:
-    NANO_DISPLAY::setMessage("Config Key", 0, 2);
-    NANO_DISPLAY::setMessage("Enter to adjust", 1, 1);
+    NANO_DISPLAY::setMessage("Config Key", LINE_TOP, 2);
+    NANO_DISPLAY::setMessage("Enter to adjust", LINE_MID_TOP, 1);
     break;
   case MENU_SEL_KEYPAD_ADJ:
-    NANO_DISPLAY::setMessage("Adjust Key", 0, 2);
+    NANO_DISPLAY::setMessage("Adjust Key", LINE_TOP, 2);
     break;
   case MENU_SEL_LAST:
   default:

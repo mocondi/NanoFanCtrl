@@ -17,14 +17,17 @@
 #include "Config.h"
 #include "Debug.h"
 
+#define CONTROL_INTERVAL        1000
+#define CONFIG_INTERVAL          100
+
 // Globals
 int keypadKey = KEY_NONE;
 int oldKeyPadKey = KEY_NONE;
 bool keypadTrigger = false;
-int controlState = STATE_IDLE;
+int controlState = STATE_CONTROL;
 unsigned long currentTime;
 unsigned long lastTime;
-const unsigned long setControlInterval = 1000;
+unsigned long setControlInterval = CONTROL_INTERVAL;
 
 // MAIN SETUP /////////////////////////////////////////////////////////////////
 void setup()
@@ -64,6 +67,7 @@ void setup()
 }
 ///////////////////////////////////////////////////////////////////////////////
 
+// Read analog inputs
 void ReadAnalogs()
 {
   TOOLS::SampleAnalogs();
@@ -78,6 +82,7 @@ void ReadAnalogs()
   }
 }
 
+// Process control variabless
 void UpdateControl()
 {
   //Serial.println(F("UpdateControl() started..."));
@@ -105,6 +110,7 @@ void UpdateControl()
   }
 }
 
+// Udpate LCD display
 void UpdateDisplay()
 {
   M_CONTROL::UpdateControlDisplay();
@@ -113,8 +119,27 @@ void UpdateDisplay()
 // MAIN LOOP /////////////////////////////////////////////////////////////////
 void loop() {
 
+  // Process interval
   currentTime = millis();
   if (currentTime - lastTime >= setControlInterval) {
+
+    // Adjust interval based on state
+    switch (controlState) {
+    case STATE_CONTROL:
+      setControlInterval = CONTROL_INTERVAL;
+      break;
+    case STATE_CONFIG:
+      setControlInterval = CONFIG_INTERVAL;
+      break;
+    case STATE_DEBUG:
+      setControlInterval = CONTROL_INTERVAL;
+      break;
+    case STATE_IDLE:
+    default:
+      setControlInterval = CONTROL_INTERVAL;
+      break;
+    }
+
     // Read analogs
     ReadAnalogs();
 

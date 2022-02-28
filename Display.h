@@ -9,18 +9,16 @@
 
 #define MAX_TABLE         6
 #define Y_OFFSET         22
-//*
 #define DISP_TOP_SIZE     2
 #define DISP_TEMP_SIZE    3
 #define DISP_FAN_SIZE     2
 #define DISP_RPM_SIZE     2
-//*/
-/*
-#define DISP_TOP_SIZE     1
-#define DISP_TEMP_SIZE    1
-#define DISP_FAN_SIZE     1
-#define DISP_RPM_SIZE     1
-*/
+
+#define LINE_TOP          0
+#define LINE_MID_TOP      1
+#define LINE_MID          2
+#define LINE_BOTTOM       3
+
 #define SCREEN_WIDTH    128 // OLED display width, in pixels
 #define SCREEN_HEIGHT    64 // OLED display height, in pixels
 #define OLED_RESET       -1
@@ -38,12 +36,7 @@ namespace NANO_DISPLAY
   void showArrowIcons();
   void test();
 }
-/*
-typedef struct _PAIR {
-  float temp;
-  int percent;
-} PAIR;
-*/
+
 
 /*  
   // Scroll in various directions, pausing in-between:
