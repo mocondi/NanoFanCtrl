@@ -113,11 +113,11 @@ void UpdateDisplay()
 // MAIN LOOP /////////////////////////////////////////////////////////////////
 void loop() {
 
-  // Read analogs
-  ReadAnalogs();
-
   currentTime = millis();
   if (currentTime - lastTime >= setControlInterval) {
+    // Read analogs
+    ReadAnalogs();
+
     // Update control
     UpdateControl();
 

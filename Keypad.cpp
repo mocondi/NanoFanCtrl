@@ -54,45 +54,6 @@ bool KEY_PAD::readKeypad(int *aKey)
   return false;
 }
 
-/*
-void KEY_PAD::processKeyStates(int &aState, int aKey)
-{
-  switch (aState)
-  {
-  case STATE_IDLE:
-  case STATE_CONTROL:
-    // Any key will move to config state
-    if (aKey == KEY_NONE) break;
-    else aState = STATE_CONFIG;    
-    break;
-  case STATE_CONFIG:
-    // Config will pull state out or after timeout
-    break;
-  case STATE_DEBUG:
-  default:
-    break;
-  }
-
-  switch(aKey)
-  {
-    case KEY_LEFT:
-      break;
-    case KEY_UP:
-      break;
-    case KEY_DOWN:
-      break;
-    case KEY_RIGHT:
-      break;
-    case KEY_ENTER:
-      break;
-    case KEY_NONE:
-      break;
-    default:
-      break;  
-  }
-
-}
-*/
 
 
 

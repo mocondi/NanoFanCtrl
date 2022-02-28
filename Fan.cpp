@@ -2,8 +2,8 @@
 #include "Fan.h"
 #include "Tools.h"
 
-volatile unsigned long highTime = 1;
-volatile unsigned long lowTime = 1;
+unsigned long highTime = 1;
+unsigned long lowTime = 1;
 
 void pulseCountHigh()
 {

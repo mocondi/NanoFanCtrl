@@ -10,7 +10,7 @@
 #include "Display.h"
 #include "Keypad.h"
 
-//static volatile int AD[NUM_ANALOG_INPUTS];
+//static int AD[NUM_ANALOG_INPUTS];
 
 void M_DEBUG::UpdateDebugDisplay()
 {

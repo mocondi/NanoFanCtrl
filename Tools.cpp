@@ -7,7 +7,7 @@
 
 //static struct pt_sem full, empty;
 // Analog input array
-volatile ANALOG_CHANNEL ADInputs[MAX_ANALOGS];
+ANALOG_CHANNEL ADInputs[MAX_ANALOGS];
 
 void TOOLS::InitAnalogData()
 {

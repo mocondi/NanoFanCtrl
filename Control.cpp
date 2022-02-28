@@ -13,9 +13,9 @@
 #include "Debug.h"
 
 
-static volatile float probeTemp = 0;
-static volatile int setSpeed = 0;
-static volatile int fanSpeed = 0;
+static float probeTemp = 0;
+static int setSpeed = 0;
+static int fanSpeed = 0;
 float gM;
 int gB;
 static bool loopIttr = false;
